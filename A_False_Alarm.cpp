@@ -1,35 +1,30 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
-
-bool canPassAllDoors(vector<int> &a, int n, int x) {
-    for (int start = 0; start < n; ++start) {
-        bool possible = true;
-        for (int i = 0; i < n; ++i) {
-            if (a[i] == 1) {
-                if (i < start || i >= start + x) {
-                    possible = false;
-                    break;
-                }
+int main()
+{
+    int t;cin>>t;
+    while(t--){
+        int n;cin>>n;
+        int x;cin>>x;
+        vector<int> v(n);
+        int first1=-1;
+        int last1=-1;
+        for(int i=0;i<n;i++){
+            cin>>v[i];
+            if(v[i]==1 && first1==-1){
+                first1=i;
+            }
+            if(v[i]==1){
+                last1=i;
             }
         }
-        if (possible) {
-            return true;
-        }
-    }
-    return false;
-}
 
-int main() {
-    int t;
-    cin >> t;
-    while (t--) {
-        int n, x;
-        cin >> n >> x;
-        vector<int> a(n);
-        for (int i = 0; i < n; ++i) {
-            cin >> a[i];
+        if(last1-first1+1 > x){
+            cout<<"NO"<<endl;
         }
-        cout << (canPassAllDoors(a, n, x) ? "YES" : "NO") << '\n';
+        else{
+            cout<<"YES"<<endl;
+        }
     }
-    return 0;
+ return 0;
 }

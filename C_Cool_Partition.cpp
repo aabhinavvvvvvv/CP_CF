@@ -6,19 +6,20 @@ int main()
     while(t--){
         int n;cin>>n;
         vector<int> v(n);
-        for(auto&x :v){
+        for(auto&x:v){
             cin>>x;
         }
-        set<int> prev,total;
-        int ans=0;
-        for(auto x:v){
-            total.insert(x);
-            if(prev.count(x)){
-                prev.erase(x);
+        set<int> curr,total;
+        curr.insert(v[0]);
+        int ans=1;
+        for(int i=1;i<n;i++){
+            total.insert(v[i]);
+            if(curr.count(v[i])){
+                curr.erase(v[i]);
             }
-            if(prev.empty()){
+            if(curr.empty()){
                 ans++;
-                prev=total;
+                curr=total;
             }
         }
         cout<<ans<<endl;
