@@ -41,82 +41,34 @@ void fastIO() {
     cin.tie(nullptr);
     cout.tie(nullptr);
 }
-
-void solve() {
-    ll l,r;cin>>l>>r;
-    ll temp1=l;
-    ll size=0;
-    while(temp1>0){
-        temp1/=10;
-        size++;
+string l,r;
+int solve1(int index,bool tightL,bool tightR,ll n){
+    if(index==n) return 0;
+    char low = l[index];
+    char high = r[index];
+    if(!tightL){
+        low = '0';
     }
-    if(l==r){
-        cout<<size*2<<endl;
-        return;
+    if(!tightR){
+        high = '9';
     }
-    temp1 = l;
-    ll temp2=r;
-    vll L(size),R(size);
-ll idx = size - 1;
-while (temp1 > 0) {
-    L[idx] = temp1 % 10;
-    R[idx] = temp2 % 10;
-    temp1 /= 10;
-    temp2 /= 10;
-    idx--;
+    if(high > low + 1){
+        return 0;
+    }
+    if(high==low){
+        return (l[index] == high) + (r[index] == low) + solve1(index+1,tightL,tightR,n);
+    }
+int ma = (l[index] == low) + (r[index] == low) + solve1(index + 1, tightL, false,n) ;
+        ma = min(ma,(l[index] == high) + (r[index] == high) + solve1(index + 1, false, tightR,n));
+        return ma;
 }
-    ll cnt=0;
-    // rep(i,0,size){
-    //     cout<<L[i]<<" ";
-    // }
-    // cout<<endl;
-    // rep(i,0,size){
-    //     cout<<R[i]<<" ";
-    // }
-    // cout<<endl;
-    vll result(size);
-    rep(i,0,size){
-        if(L[i]==R[i] && L[i]==9){
-            result[i]=0;
-            if(result[i]==R[i]){
-                cnt++;
-            }
-        }
-        else if(L[i]-R[i]==0){
-            cnt+=2;
-            result[i]=L[i];
-            // cout<<"loop1"<<" ";
-
-        }
-        else if(abs(L[i]-R[i])<=1){
-            result[i]=L[i];
-            cnt++;
-            // cout<<"lppp2"<<" ";
-
-        }
-
-        else if(R[i] - L[i] > 0){
-            result[i] = (R[i]+L[i])/2;
-            // cout<<"lppp3"<<" ";
-
-        }
-        else if(R[i]-L[i]<0 ){
-            if(L[i]==9){
-                result[i]=0;
-            }
-            else{
-                result[i] =L[i] + 1;
-            }
-            if(result[i]==R[i]){
-                cnt++;
-            }
-            // if()
-            // cout<<"lppp4"<<" ";
-
-        }
-        
-    }
-    cout<<cnt<<endl;
+void solve() {
+    ll L,R;cin>>L>>R;
+    l = to_string(L);
+    r = to_string(R);
+    ll n=l.size();
+    cout<<solve1(0,true,true,l.size())<<endl;
+    
 
 }
 
