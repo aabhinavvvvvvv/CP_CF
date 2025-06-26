@@ -2,6 +2,7 @@
  * Competitive Programming Template
  * Author: Abhinav Gupta
  * GitHub: @aabhinavvvvvvv
+ * MAHAKAL KI JAI
  */
 
 #include <bits/stdc++.h>
@@ -61,42 +62,56 @@ template<typename K, typename V> void _print(map<K, V> m) {
     cerr << '}';
 }
 
-void solve() {
-    int n, k;
-    cin >> n >> k;
-    vi v(n);
-    each(x, v) cin >> x;
-
-    if (n == 1) {
-        cout << 0 << endl;
-        return;
+/*
+ * Bakchodi Mat Kar Laude
+ * Chup Chap code kar
+ * I will not be responsible for any damage caused by this code
+ */
+long long solve() {
+    int n;
+    std::cin >> n;
+    std::vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        std::cin >> a[i];
     }
 
-    sort(all(v));
-    int ans = 0;
+    long long count = 0;
 
-    int l = 0;
-    while (l < n) {
-        int len = 1;
-        int i = l;
+    for (int k = 2; k < n; ++k) {
+        int left = 0;
+        int right = k - 1;
 
-        while (i + 1 < n && v[i + 1] - v[i] <= k) {
-            len++;
-            i++;
+        int a_n_minus_1 = a[n - 1];
+        
+        while (left < right) {
+            int val_i = a[left];
+            int val_j = a[right];
+            int val_k = a[k];
+            int required_i_val_cond1 = val_k - val_j;
+
+            int required_i_val_cond2 = -2e9;
+
+            if (k < n - 1) { 
+                required_i_val_cond2 = a_n_minus_1 - val_k - val_j;
+            }
+            
+            int final_required_i_val = std::max(required_i_val_cond1, required_i_val_cond2);
+
+            if (val_i > final_required_i_val) {
+                count += (right - left);
+                right--; 
+            } else {
+                left++;
+            }
         }
-
-        ans = max(ans, len);
-        l = i + 1;
     }
-
-    cout << n - ans << endl;
+    return count;
 }
-
 
 int main() {
     fastIO();
     int t = 1;
     cin >> t;
-    while (t--) solve();
+    while (t--) cout<< solve()<<endl;
     return 0;
 }

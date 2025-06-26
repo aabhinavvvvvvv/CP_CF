@@ -2,6 +2,7 @@
  * Competitive Programming Template
  * Author: Abhinav Gupta
  * GitHub: @aabhinavvvvvvv
+ * MAHAKAL KI JAI
  */
 
 #include <bits/stdc++.h>
@@ -61,37 +62,37 @@ template<typename K, typename V> void _print(map<K, V> m) {
     cerr << '}';
 }
 
+/*
+ * Bakchodi Mat Kar Laude
+ * Chup Chap code kar
+ * I will not be responsible for any damage caused by this code
+ */
 void solve() {
-    int n, k;
-    cin >> n >> k;
-    vi v(n);
-    each(x, v) cin >> x;
-
-    if (n == 1) {
-        cout << 0 << endl;
-        return;
-    }
-
-    sort(all(v));
-    int ans = 0;
-
-    int l = 0;
-    while (l < n) {
-        int len = 1;
-        int i = l;
-
-        while (i + 1 < n && v[i + 1] - v[i] <= k) {
-            len++;
-            i++;
+    int n;cin>>n;
+    vi a(n);
+    each(x,a) cin>>x;
+    int ans = INT_MAX;
+    for(int i=0;i<n-1;i++){
+        if(abs(a[i+1] - a[i]) <= 1){
+            ans = 0;
         }
-
-        ans = max(ans, len);
-        l = i + 1;
+    }
+    for(int i=0;i<n-2;i++){
+        if((a[i]<=a[i+1] && a[i+1]>=a[i+2]) || (a[i]>=a[i+1] && a[i+1]<=a[i+2])){
+            ans = min(ans,1);
+        }
     }
 
-    cout << n - ans << endl;
-}
+    if(ans != INT_MAX){
+        cout<<ans<<endl;
 
+    }
+    else{
+        cout<<-1<<endl;
+    }
+    
+    
+}
 
 int main() {
     fastIO();

@@ -60,38 +60,19 @@ template<typename K, typename V> void _print(map<K, V> m) {
     for (auto &p : m) _print(p), cerr << ' ';
     cerr << '}';
 }
-
-void solve() {
-    int n, k;
-    cin >> n >> k;
-    vi v(n);
-    each(x, v) cin >> x;
-
-    if (n == 1) {
-        cout << 0 << endl;
-        return;
-    }
-
-    sort(all(v));
-    int ans = 0;
-
-    int l = 0;
-    while (l < n) {
-        int len = 1;
-        int i = l;
-
-        while (i + 1 < n && v[i + 1] - v[i] <= k) {
-            len++;
-            i++;
-        }
-
-        ans = max(ans, len);
-        l = i + 1;
-    }
-
-    cout << n - ans << endl;
+bool isPerfectSquare(long long num) {
+    long long root = sqrt(num);
+    return root * root == num;
 }
+void solve() {
+    ll l1,b1,l2,b2,l3,b3;
+    cin>>l1>>b1>>l2>>b2>>l3>>b3;
+    ll ans = l1*b1 + l2*b2 + l3*b3;
+    cout<<ans<<" ";
+    if(isPerfectSquare(ans)) cout<<"YES"<<endl;
+    else cout<<"NO"<<endl;
 
+}
 
 int main() {
     fastIO();

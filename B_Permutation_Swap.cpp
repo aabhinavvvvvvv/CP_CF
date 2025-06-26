@@ -2,6 +2,7 @@
  * Competitive Programming Template
  * Author: Abhinav Gupta
  * GitHub: @aabhinavvvvvvv
+ * MAHAKAL KI JAI
  */
 
 #include <bits/stdc++.h>
@@ -61,37 +62,32 @@ template<typename K, typename V> void _print(map<K, V> m) {
     cerr << '}';
 }
 
+/*
+ * Bakchodi Mat Kar Laude
+ * Chup Chap code kar
+ * I will not be responsible for any damage caused by this code
+ */
+int gcd(int a,int b){
+    if(b==0) return a;
+    return gcd(b,a%b);
+}
 void solve() {
-    int n, k;
-    cin >> n >> k;
-    vi v(n);
-    each(x, v) cin >> x;
-
-    if (n == 1) {
-        cout << 0 << endl;
-        return;
-    }
-
-    sort(all(v));
-    int ans = 0;
-
-    int l = 0;
-    while (l < n) {
-        int len = 1;
-        int i = l;
-
-        while (i + 1 < n && v[i + 1] - v[i] <= k) {
-            len++;
-            i++;
+     int n; cin >> n;
+        vector<int> p(n);
+        for(int i = 0; i < n; ++i) {
+            cin >> p[i];
+            --p[i];
         }
 
-        ans = max(ans, len);
-        l = i + 1;
-    }
+        int k = 0;
+        for(int i = 0; i < n; ++i) {
+            if(p[i] != i) {
+                k = gcd(k, abs(p[i] - i));
+            }
+        }
 
-    cout << n - ans << endl;
+        cout << k << '\n';
 }
-
 
 int main() {
     fastIO();

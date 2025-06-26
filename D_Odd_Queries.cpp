@@ -2,6 +2,7 @@
  * Competitive Programming Template
  * Author: Abhinav Gupta
  * GitHub: @aabhinavvvvvvv
+ * MAHAKAL KI JAI
  */
 
 #include <bits/stdc++.h>
@@ -61,37 +62,34 @@ template<typename K, typename V> void _print(map<K, V> m) {
     cerr << '}';
 }
 
+/*
+ * Bakchodi Mat Kar Laude
+ * Chup Chap code kar
+ * I will not be responsible for any damage caused by this code
+ */
 void solve() {
-    int n, k;
-    cin >> n >> k;
+    int n,q;cin>>n>>q;
     vi v(n);
-    each(x, v) cin >> x;
-
-    if (n == 1) {
-        cout << 0 << endl;
-        return;
+    ll sum=0;
+    each(x,v)cin>>x,sum+=x;;
+    vll prefix(n);
+    prefix[0]=v[0];
+    rep(i,1,n){
+        prefix[i]=prefix[i-1]+v[i];
     }
-
-    sort(all(v));
-    int ans = 0;
-
-    int l = 0;
-    while (l < n) {
-        int len = 1;
-        int i = l;
-
-        while (i + 1 < n && v[i + 1] - v[i] <= k) {
-            len++;
-            i++;
+    while(q--) {
+        int l,r,k;cin>>l>>r>>k;
+        int minus = prefix[r-1] - (l > 1 ? prefix[l-2]:0);
+        int newsum = sum - minus + k*(r-l+1);
+        if(newsum&1){
+            cout<<"YES"<<endl;
         }
-
-        ans = max(ans, len);
-        l = i + 1;
+        else{
+            cout<<"NO"<<endl;
+        }
+        // cout<<endl;
     }
-
-    cout << n - ans << endl;
 }
-
 
 int main() {
     fastIO();

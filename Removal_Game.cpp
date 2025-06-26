@@ -62,36 +62,11 @@ template<typename K, typename V> void _print(map<K, V> m) {
 }
 
 void solve() {
-    int n, k;
-    cin >> n >> k;
+    int n;cin>>n;
     vi v(n);
-    each(x, v) cin >> x;
-
-    if (n == 1) {
-        cout << 0 << endl;
-        return;
-    }
-
-    sort(all(v));
-    int ans = 0;
-
-    int l = 0;
-    while (l < n) {
-        int len = 1;
-        int i = l;
-
-        while (i + 1 < n && v[i + 1] - v[i] <= k) {
-            len++;
-            i++;
-        }
-
-        ans = max(ans, len);
-        l = i + 1;
-    }
-
-    cout << n - ans << endl;
+    each(x,v) cin>>x;
+    
 }
-
 
 int main() {
     fastIO();

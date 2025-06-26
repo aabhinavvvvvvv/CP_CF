@@ -2,6 +2,7 @@
  * Competitive Programming Template
  * Author: Abhinav Gupta
  * GitHub: @aabhinavvvvvvv
+ * MAHAKAL KI JAI
  */
 
 #include <bits/stdc++.h>
@@ -61,37 +62,30 @@ template<typename K, typename V> void _print(map<K, V> m) {
     cerr << '}';
 }
 
+/*
+ * Bakchodi Mat Kar Laude
+ * Chup Chap code kar
+ * I will not be responsible for any damage caused by this code
+ */
 void solve() {
-    int n, k;
-    cin >> n >> k;
-    vi v(n);
-    each(x, v) cin >> x;
+    int a,x,y;cin>>a>>x>>y;
+    bool found = false;
+        for (int b = 1; b <= 100; ++b) {
+            if (b == a) continue;
 
-    if (n == 1) {
-        cout << 0 << endl;
-        return;
-    }
+            int dist_b_x = abs(b - x);
+            int dist_b_y = abs(b - y);
+            int dist_a_x = abs(a - x);
+            int dist_a_y = abs(a - y);
 
-    sort(all(v));
-    int ans = 0;
-
-    int l = 0;
-    while (l < n) {
-        int len = 1;
-        int i = l;
-
-        while (i + 1 < n && v[i + 1] - v[i] <= k) {
-            len++;
-            i++;
+            if (dist_b_x < dist_a_x && dist_b_y < dist_a_y) {
+                found = true;
+                break;
+            }
         }
 
-        ans = max(ans, len);
-        l = i + 1;
-    }
-
-    cout << n - ans << endl;
+        cout << (found ? "YES" : "NO") << endl;
 }
-
 
 int main() {
     fastIO();
