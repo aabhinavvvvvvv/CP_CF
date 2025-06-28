@@ -65,29 +65,30 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n;cin>>n;
-    vi v(n);
-    // if(n==1){
-    //     cout<<0<<endl;
-    //     return;
-    // }
-    map<int,int> mp;
-    rep(i,0,n) {
-        cin>>v[i];
-        mp[v[i]]++;
+    ll x,n;
+    cin>>x>>n;
+    ll val = n%4;
+    ll pos;
+    if(val == 0){
+        pos = 0;
     }
-    int maxi = INT_MIN;
-    for(auto i:mp) maxi = max(maxi,i.second);
-    debug(mp);
-    debug(maxi);
-    int ops = 0;
-    while(maxi < n){
-        ops++;
-        ops += min(maxi,n-maxi);
-        maxi += min(maxi,n-maxi);
-        
+    else if(val == 1){
+        pos = -n;
     }
-    cout<<ops<<endl;
+    else if(val == 2){
+        pos = 1;
+    }
+    else{
+        pos = n + 1;
+    }
+
+    if(x&1){
+        pos = x - pos;
+    }
+    else{
+        pos = x + pos;
+    }
+    cout<<pos<<endl;
 }
 
 int main() {
