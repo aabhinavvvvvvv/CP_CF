@@ -31,11 +31,7 @@ const int N = 2e5 + 5;
 #define sz(x) (int)(x).size()
 #define fastIO() ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
-#ifndef ONLINE_JUDGE
 #define debug(x) cerr << #x << " = "; _print(x); cerr << endl;
-#else
-#define debug(x)
-#endif
 
 void _print(int t) { cerr << t; }
 void _print(long long t) { cerr << t; }
@@ -69,20 +65,42 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n;cin>>n;
-    vi v(n);
-    each(x,v) cin>>x;
-    debug(n);
-    debug(v);
-    cout<<n+100<<endl;
+    int n,m;
+    cin>>n>>m;
+    if(m==0){
+        cout<<n<<endl;
+        return;
+    }
+    vector<vector<int>> adj(n);
+    int u,v;
+    rep(i,0,m){
+        cin>>u>>v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    bool alltwo=true;
+    for(auto x:adj){
+        if(x.size()<2){
+            alltwo=false;
+        }
+    }
+    if(alltwo){
+        cout<<m-n<<endl;
+        return;
+    }
+    
 }
 
 int main() {
     fastIO();
-#ifndef ONLINE_JUDGE
+
+    // ✅ Always redirect stderr to Error.txt for debug
+    freopen("Error.txt", "w", stderr);
+
+#ifdef LOCAL
+    // ✅ Only redirect input/output during local debugging
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-    freopen("Error.txt", "w", stderr);
 #endif
 
     int t = 1;

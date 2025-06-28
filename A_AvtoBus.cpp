@@ -69,24 +69,39 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n;cin>>n;
-    vi v(n);
-    each(x,v) cin>>x;
+    ll n;
+    cin >> n;
+
+    if (n < 4 || n % 2 == 1) {
+        cout << -1 << '\n';
+        return;
+    }
+
+    ll mini = (n + 5) / 6;
+    ll maxx = n / 4;
     debug(n);
-    debug(v);
-    cout<<n+100<<endl;
+    debug(maxx);
+
+    cout << mini << " " << maxx << '\n';
 }
 
 int main() {
     fastIO();
-#ifndef ONLINE_JUDGE
+
+    // ✅ Always redirect only `stderr` to Error.txt
+    freopen("Error.txt", "w", stderr);
+
+#ifdef LOCAL
+    // ✅ Only redirect input/output files when debugging locally
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-    freopen("Error.txt", "w", stderr);
 #endif
 
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--) solve();
     return 0;
 }
+
+
+
