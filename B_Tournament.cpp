@@ -63,33 +63,30 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-bool solveMem(int i, int xorr, vector<vector<int>>& grid, int n, int m,vector<vector<int>>& dp) {
-    if (i == n) {
-        return xorr > 0;
-    }
-    if(dp[i][xorr]!=-1){
-        return dp[i][xorr];
-    }
-    bool ans = false;
-    for (int j = 0; j < m; ++j) {
-        ans |= solveMem(i + 1, xorr^grid[i][j], grid, n, m,dp);  
-    }
-
-    return dp[i][xorr] = ans;
-}
 
 void solve() {
-    int n,m;cin>>n>>m;
-    vector<vector<int>> grid(n,vector<int>(m));
-    rep(i,0,n){
-        rep(j,0,m){
-            cin>>grid[i][j];
+    int n, j, k;
+    cin >> n >> j >> k;
+    vi v(n);
+    int maxi = 0;
+    for (int i = 0; i < n; ++i) {
+        cin >> v[i];
+        if (v[i] > maxi) {
+            maxi = v[i];
         }
     }
-    debug(grid);
-    vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
-    cout<<solveMem(0,0,grid,n,m,dp)<<endl;
-    debug(dp);
+    j--; 
+
+    if (k >= 2) {
+        cout<<"YES"<<endl;
+    } else { 
+        if (v[j] == maxi) {
+            cout<<"YES"<<endl;
+        } else {
+            cout<<"NO"<<endl;
+        }
+    }
+    
 }
 
 int main() {
@@ -105,7 +102,7 @@ int main() {
 #endif
 
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--) solve();
     return 0;
 }

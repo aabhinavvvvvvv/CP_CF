@@ -63,33 +63,43 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-bool solveMem(int i, int xorr, vector<vector<int>>& grid, int n, int m,vector<vector<int>>& dp) {
-    if (i == n) {
-        return xorr > 0;
-    }
-    if(dp[i][xorr]!=-1){
-        return dp[i][xorr];
-    }
-    bool ans = false;
-    for (int j = 0; j < m; ++j) {
-        ans |= solveMem(i + 1, xorr^grid[i][j], grid, n, m,dp);  
-    }
-
-    return dp[i][xorr] = ans;
-}
 
 void solve() {
-    int n,m;cin>>n>>m;
-    vector<vector<int>> grid(n,vector<int>(m));
-    rep(i,0,n){
-        rep(j,0,m){
-            cin>>grid[i][j];
+    int n,k;cin>>n>>k;
+    string s;cin>>s;
+    int ones=0;
+    for(auto x:s){
+        if(x=='1')ones++;
+    }
+    if(ones<=k){
+        cout<<"Alice"<<endl;
+        return;
+    }
+    if(k==1){
+        cout<<"Bob"<<endl;
+        return;
+    }
+     bool val = false;
+    int zero = 0;
+    for (int i = 0; i < n; ++i) {
+        if (s[i] == '0') {
+            zero++;
+        } 
+        else{
+            zero=0;
+        }
+        if(zero>=k) {
+            val= true;
+            break;
         }
     }
-    debug(grid);
-    vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
-    cout<<solveMem(0,0,grid,n,m,dp)<<endl;
-    debug(dp);
+
+    if (val || n>=2*k) {
+        cout << "Bob" << endl;
+    } else {
+        cout << "Alice" << endl;
+    }
+    
 }
 
 int main() {
@@ -105,7 +115,7 @@ int main() {
 #endif
 
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--) solve();
     return 0;
 }

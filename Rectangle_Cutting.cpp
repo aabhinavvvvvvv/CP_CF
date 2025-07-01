@@ -63,33 +63,47 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-bool solveMem(int i, int xorr, vector<vector<int>>& grid, int n, int m,vector<vector<int>>& dp) {
-    if (i == n) {
-        return xorr > 0;
-    }
-    if(dp[i][xorr]!=-1){
-        return dp[i][xorr];
-    }
-    bool ans = false;
-    for (int j = 0; j < m; ++j) {
-        ans |= solveMem(i + 1, xorr^grid[i][j], grid, n, m,dp);  
-    }
 
-    return dp[i][xorr] = ans;
+int solveMem(int a,int b,vector<vector<int>>& dp){
+    if(a==b) return 0;
+    if(dp[a][b]!=-1) return dp[a][b];
+    int ans = INT_MAX;
+    for(int i = 1;i<a;i++){
+        ans = min(ans,1+solveMem(i,b,dp)+solveMem(a-i,b,dp));
+    }
+    for(int i = 1;i<b;i++){
+        ans = min(ans,1+solveMem(a,i,dp)+solveMem(a,b-i,dp));
+    }
+    return dp[a][b] = ans;
 }
+    int solveTab(int a, int b) {
+    vector<vector<int>> dp(a + 1, vector<int>(b + 1, 0));
 
-void solve() {
-    int n,m;cin>>n>>m;
-    vector<vector<int>> grid(n,vector<int>(m));
-    rep(i,0,n){
-        rep(j,0,m){
-            cin>>grid[i][j];
+    for (int i = 1; i <= a; i++) {
+        for (int j = 1; j <= b; j++) {
+            if (i == j) {
+                dp[i][j] = 0; 
+            } else {
+                int ans = INT_MAX;
+                for (int k = 1; k < i; k++) {
+                    ans = min(ans, 1 + dp[k][j] + dp[i - k][j]);
+                }
+                for (int k = 1; k < j; k++) {
+                    ans = min(ans, 1 + dp[i][k] + dp[i][j - k]);
+                }
+
+                dp[i][j] = ans;
+            }
         }
     }
-    debug(grid);
-    vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
-    cout<<solveMem(0,0,grid,n,m,dp)<<endl;
-    debug(dp);
+
+    return dp[a][b];
+}
+void solve() {
+    int a,b;cin>>a>>b;
+    // vector<vector<int>> dp(a+1,vector<int>(b+1,-1));
+    // cout<<solveMem(a,b,dp);
+    cout<<solveTab(a,b);
 }
 
 int main() {

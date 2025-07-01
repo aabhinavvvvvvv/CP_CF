@@ -63,33 +63,38 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-bool solveMem(int i, int xorr, vector<vector<int>>& grid, int n, int m,vector<vector<int>>& dp) {
-    if (i == n) {
-        return xorr > 0;
-    }
-    if(dp[i][xorr]!=-1){
-        return dp[i][xorr];
-    }
-    bool ans = false;
-    for (int j = 0; j < m; ++j) {
-        ans |= solveMem(i + 1, xorr^grid[i][j], grid, n, m,dp);  
-    }
-
-    return dp[i][xorr] = ans;
-}
 
 void solve() {
-    int n,m;cin>>n>>m;
-    vector<vector<int>> grid(n,vector<int>(m));
-    rep(i,0,n){
-        rep(j,0,m){
-            cin>>grid[i][j];
-        }
+    int n;
+    cin >> n;
+    vi a(n);
+    vi freq(n + 1, 0);
+
+    each(x, a) {
+        cin >> x;
+        freq[x]++;
     }
-    debug(grid);
-    vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
-    cout<<solveMem(0,0,grid,n,m,dp)<<endl;
-    debug(dp);
+
+    vi diff(n + 2, 0); 
+
+    for (int mex = 0; mex <= n; ++mex) {
+        int mini = freq[mex];     
+        int maxi = n - mex;       
+
+        if (mini <= maxi) {
+            diff[mini]++;
+            if (maxi + 1 <= n) diff[maxi + 1]--;
+        }
+
+        if (freq[mex] == 0) break; 
+    }
+
+    int count = 0;
+    rep(k, 0, n + 1) {
+        count += diff[k];
+        cout << count << " ";
+    }
+    cout << '\n';
 }
 
 int main() {
@@ -105,7 +110,7 @@ int main() {
 #endif
 
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--) solve();
     return 0;
 }

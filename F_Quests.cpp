@@ -1,10 +1,3 @@
-/*
- * Competitive Programming Template
- * Author: Abhinav Gupta
- * GitHub: @aabhinavvvvvvv
- * MAHAKAL KI JAI
- */
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -18,11 +11,11 @@ using pll = pair<ll, ll>;
 
 const ll INF = 1e18;
 const int MOD = 1e9 + 7;
-const int N = 2e5 + 5;
+const int N_MAX = 2e5 + 5;
 
 #define pb push_back
 #define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
+#define rall(x) (x).rbegin(), (x).rbegin()
 #define F first
 #define S second
 #define rep(i,a,b) for(int i=a; i<b; ++i)
@@ -58,54 +51,78 @@ void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " ";
 template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
-/*
- * Bakchodi Mat Kar Laude
- * Chup Chap code kar
- * I will not be responsible for any damage caused by this code
- */
-bool solveMem(int i, int xorr, vector<vector<int>>& grid, int n, int m,vector<vector<int>>& dp) {
-    if (i == n) {
-        return xorr > 0;
-    }
-    if(dp[i][xorr]!=-1){
-        return dp[i][xorr];
-    }
-    bool ans = false;
-    for (int j = 0; j < m; ++j) {
-        ans |= solveMem(i + 1, xorr^grid[i][j], grid, n, m,dp);  
-    }
-
-    return dp[i][xorr] = ans;
-}
-
 void solve() {
-    int n,m;cin>>n>>m;
-    vector<vector<int>> grid(n,vector<int>(m));
-    rep(i,0,n){
-        rep(j,0,m){
-            cin>>grid[i][j];
+    int n;
+    ll c;
+    int d;
+    cin >> n >> c >> d;
+
+    vll a_rewards(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a_rewards[i];
+    }
+
+    sort(a_rewards.rbegin(), a_rewards.rend());
+
+    vector<ll> pref_sum_a(n + 1, 0);
+    for (int i = 0; i < n; ++i) {
+        pref_sum_a[i+1] = pref_sum_a[i] + a_rewards[i];
+    }
+
+    auto calculate_total_coins = [&](ll k_val) {
+
+        ll count_in_cycle = min((ll)n, k_val + 1);
+
+        ll sum_of_cycle_quests = pref_sum_a[count_in_cycle];
+
+        ll num_full_cycles = d / (k_val + 1);
+
+        ll remaining_days = d % (k_val + 1);
+
+        ll total_coins = num_full_cycles * sum_of_cycle_quests;
+        if (remaining_days > 0) {
+            total_coins += pref_sum_a[min((ll)n, remaining_days)];
+        }
+        return total_coins;
+    };
+
+    if (calculate_total_coins(0) < c) {
+        cout << "Impossible\n";
+        return;
+    }
+
+    if (pref_sum_a[min((ll)n, (ll)d)] >= c) {
+        cout << "Infinity\n";
+        return;
+    }
+
+    ll low = 0, high = 200000 + 7;
+    ll ans_k = 0;
+
+    while (low <= high) {
+        ll mid = low + (high - low) / 2;
+
+        if (calculate_total_coins(mid) >= c) {
+            ans_k = mid;
+            low = mid + 1;
+        } else {
+            high = mid - 1;
         }
     }
-    debug(grid);
-    vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
-    cout<<solveMem(0,0,grid,n,m,dp)<<endl;
-    debug(dp);
+
+    cout << ans_k << "\n";
 }
 
 int main() {
     fastIO();
 
-    // ✅ Always redirect stderr to Error.txt for debug
-    freopen("Error.txt", "w", stderr);
-
 #ifdef LOCAL
-    // ✅ Only redirect input/output during local debugging
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
 #endif
 
     int t = 1;
-    // cin >> t;
-    while (t--) solve();
+    cin >> t;
+    while (t--) {
+        solve();
+    }
     return 0;
 }
