@@ -65,16 +65,17 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    double finish,dtobolt,ta,bs;cin>>finish>>dtobolt>>ta>>bs;
-    double t = 2*(finish+dtobolt)/ta;
-    double ans = sqrt(t);
-    double b = finish/bs;
-    if(ans<=b){
-        cout<<"Tiger"<<endl;
+    int n;cin>>n;
+    int ops=INT_MAX;
+    rep(i,0,n){
+        int a;cin>>a;
+        if(a==0){
+            cout<<0<<endl;
+            return;
+        }
+        ops = min(ops,abs(a));
     }
-    else{
-        cout<<"Bolt"<<endl;
-    }
+    cout<<ops<<endl;
 }
 
 int main() {
@@ -90,7 +91,7 @@ int main() {
 #endif
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) solve();
     return 0;
 }

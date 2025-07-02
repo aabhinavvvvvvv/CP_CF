@@ -65,16 +65,20 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    double finish,dtobolt,ta,bs;cin>>finish>>dtobolt>>ta>>bs;
-    double t = 2*(finish+dtobolt)/ta;
-    double ans = sqrt(t);
-    double b = finish/bs;
-    if(ans<=b){
-        cout<<"Tiger"<<endl;
-    }
-    else{
-        cout<<"Bolt"<<endl;
-    }
+     int n;cin>>n;
+     vi b(n);
+     each(x,b)cin>>x;
+     vi a;
+     a.push_back(b[0]);
+     rep(i,1,n){
+        if(b[i]<b[i-1]){
+            a.pb(1);
+        }
+        a.pb(b[i]);
+     }
+     cout<<a.size()<<endl;
+     each(x,a) cout<<x<<" ";
+     cout<<endl;
 }
 
 int main() {
