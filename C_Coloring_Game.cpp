@@ -1,0 +1,117 @@
+/*
+ * Competitive Programming Template
+ * Author: Abhinav Gupta
+ * GitHub: @aabhinavvvvvvv
+ * MAHAKAL KI JAI
+ */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ull = unsigned long long;
+using ld = long double;
+using vi = vector<int>;
+using vll = vector<ll>;
+using pii = pair<int, int>;
+using pll = pair<ll, ll>;
+
+const ll INF = 1e18;
+const int MOD = 1e9 + 7;
+const int N = 2e5 + 5;
+
+#define pb push_back
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define F first
+#define S second
+#define rep(i,a,b) for(int i=a; i<b; ++i)
+#define per(i,a,b) for(int i=a; i>b; --i)
+#define each(x,a) for(auto &x : a)
+#define sz(x) (int)(x).size()
+
+void fastIO() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+}
+
+#ifdef LOCAL
+#define debug(x) cerr << #x << " = "; _print(x); cerr << '\n';
+#else
+#define debug(x)
+#endif
+
+template<typename T> void _print(T x) { cerr << x; }
+template<typename T, typename V> void _print(pair<T, V> p) {
+    cerr << '{'; _print(p.first); cerr << ", "; _print(p.second); cerr << '}';
+}
+template<typename T> void _print(vector<T> v) {
+    cerr << '[';
+    for (auto &i : v) _print(i), cerr << ' ';
+    cerr << ']';
+}
+template<typename T> void _print(set<T> s) {
+    cerr << '{';
+    for (auto &i : s) _print(i), cerr << ' ';
+    cerr << '}';
+}
+template<typename K, typename V> void _print(map<K, V> m) {
+    cerr << '{';
+    for (auto &p : m) _print(p), cerr << ' ';
+    cerr << '}';
+}
+
+/*
+ * Bakchodi Mat Kar Laude
+ * Chup Chap code kar
+ * I will not be responsible for any damage caused by this code
+ */
+long long solve() {
+    int n;
+    std::cin >> n;
+    std::vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        std::cin >> a[i];
+    }
+
+    long long count = 0;
+
+    for (int k = 2; k < n; ++k) {
+        int left = 0;
+        int right = k - 1;
+
+        int a_n_minus_1 = a[n - 1];
+        
+        while (left < right) {
+            int val_i = a[left];
+            int val_j = a[right];
+            int val_k = a[k];
+            int required_i_val_cond1 = val_k - val_j;
+
+            int required_i_val_cond2 = -2e9;
+
+            if (k < n - 1) { 
+                required_i_val_cond2 = a_n_minus_1 - val_k - val_j;
+            }
+            
+            int final_required_i_val = std::max(required_i_val_cond1, required_i_val_cond2);
+
+            if (val_i > final_required_i_val) {
+                count += (right - left);
+                right--; 
+            } else {
+                left++;
+            }
+        }
+    }
+    return count;
+}
+
+int main() {
+    fastIO();
+    int t = 1;
+    cin >> t;
+    while (t--) cout<< solve()<<endl;
+    return 0;
+}
