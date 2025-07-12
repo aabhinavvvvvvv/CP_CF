@@ -63,107 +63,39 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-
-const int LOG = 18;
-
-ll n;
-vector<int> adj[N];
-vector<vector<int>> up;
-vector<int> depth, parent;
-
-void dfs(int node, int par) {
-    parent[node] = par;
-    up[node][0] = par;
-    for (int i = 1; i < LOG; i++) {
-        if (up[node][i - 1] != -1)
-            up[node][i] = up[up[node][i - 1]][i - 1];
-    }
-    for (int child : adj[node]) {
-        if (child != par) {
-            depth[child] = depth[node] + 1;
-            dfs(child, node);
+bool dfs(int node, int parent, vector<vector<pii>>& adj, vector<int>& roads,int need){
+    bool childfixed=false;
+    for(auto x:adj[node]){
+        int child = x.F;
+        int type = x.S;
+        if(child == parent) continue;
+        bool fixed = dfs(child, node, adj, roads, need);
+        if(type == 2 && !fixed){
+            roads.push_back(child);
+            childfixed = true;
         }
+        if(fixed) childfixed=true;
     }
+    return childfixed;
 }
-
-int lca(int u, int v) {
-    if (depth[u] < depth[v]) swap(u, v);
-    for (int i = LOG - 1; i >= 0; i--) {
-        if (up[u][i] != -1 && depth[up[u][i]] >= depth[v])
-            u = up[u][i];
-    }
-    if (u == v) return u;
-    for (int i = LOG - 1; i >= 0; i--) {
-        if (up[u][i] != up[v][i]) {
-            u = up[u][i];
-            v = up[v][i];
-        }
-    }
-    return up[u][0];
-}
-
-vector<int> getPath(int u, int v) {
-    int anc = lca(u, v);
-    vector<int> path1, path2;
-
-    while (u != anc) {
-        path1.push_back(u);
-        u = parent[u];
-    }
-    path1.push_back(anc);
-
-    while (v != anc) {
-        path2.push_back(v);
-        v = parent[v];
-    }
-    reverse(path2.begin(), path2.end());
-    path1.insert(path1.end(), path2.begin(), path2.end());
-    return path1;
-}
-
-ll maxSubarraySum(const vector<ll>& a) {
-    ll maxSum = a[0], curr = a[0];
-    for (size_t i = 1; i < a.size(); i++) {
-        curr = max(curr + a[i], a[i]);
-        maxSum = max(maxSum, curr);
-    }
-    return maxSum;
-}
-
 void solve() {
-    cin >> n;
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        --u, --v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
+    int n;cin>>n;
+    vector<vector<pii>> adj(n+1);
+    int totalbad=0;
+    rep(i,1,n){
+        int u,v,t;cin>>u>>v>>t;
+        if(t==2)totalbad++;
+        adj[u].push_back({v,t});
+        adj[v].push_back({u,t});
     }
-
-    vector<ll> happiness(n);
-    for (int i = 0; i < n; i++) cin >> happiness[i];
-
-    depth.resize(n);
-    parent.resize(n);
-    up.assign(n, vector<int>(LOG, -1));
-
-    dfs(0, -1);
-
-    int q; cin >> q;
-    while (q--) {
-        int u, v;
-        cin >> u >> v;
-        --u, --v;
-
-        vector<int> path = getPath(u, v);
-        vector<ll> pathValues;
-        for (int node : path)
-            pathValues.push_back(happiness[node]);
-
-        cout << maxSubarraySum(pathValues) << "\n";
+    vector<int> roads;
+    dfs(1, -1, adj, roads,0);
+    debug(roads);
+    cout<<roads.size()<<endl;
+    for(auto x:roads){
+        cout<<x<<" ";
     }
 }
-
 
 int main() {
     fastIO();
