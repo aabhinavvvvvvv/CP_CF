@@ -65,24 +65,22 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n, x; cin >> n >> x;
-    vi v(n);
-    each (i, v) cin >> i;
-    
-    ll mini = 0, maxi = 0;
-    ll sum = 0;
+    int n, k;
+    cin >> n >> k;
+    vector<ll> a(n * k);
+    for (auto &x : a) cin >> x;
 
-    for (int i = 0; i < n; i++) {
-        sum += v[i];
-        mini += (v[i] + x - 1) / x;  
+    int median_pos = (n + 1) / 2;
+    ll sum = 0;
+    int idx = n * k - (n - median_pos) - 1;
+
+    for (int i = 0; i < k; ++i) {
+        sum += a[idx];
+        idx -= (n - median_pos + 1);
     }
 
-    maxi = (sum + x - 1) / x;  
-
-    cout << maxi << " " << mini << "\n";
+    cout << sum << '\n';
 }
-
-
 
 int main() {
     fastIO();

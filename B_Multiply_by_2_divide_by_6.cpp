@@ -65,21 +65,23 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n, x; cin >> n >> x;
-    vi v(n);
-    each (i, v) cin >> i;
-    
-    ll mini = 0, maxi = 0;
-    ll sum = 0;
-
-    for (int i = 0; i < n; i++) {
-        sum += v[i];
-        mini += (v[i] + x - 1) / x;  
+    ll n;cin>>n;
+    int cnt2 = 0, cnt3 = 0;
+    while (n % 2 == 0) {
+        n /= 2;
+        cnt2++;
+    }
+    while (n % 3 == 0) {
+        n /= 3;
+        cnt3++;
     }
 
-    maxi = (sum + x - 1) / x;  
+    if (n != 1 || cnt2 > cnt3){
 
-    cout << maxi << " " << mini << "\n";
+        cout<<-1<<endl;
+        return;
+    }
+    cout<<(cnt3 - cnt2) + cnt3<<endl;
 }
 
 

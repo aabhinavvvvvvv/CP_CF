@@ -63,23 +63,23 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
+ll lcm(ll a, ll b) {
+    return a / __gcd(a, b) * b;
+}
 
 void solve() {
-    int n, x; cin >> n >> x;
-    vi v(n);
-    each (i, v) cin >> i;
-    
-    ll mini = 0, maxi = 0;
-    ll sum = 0;
+    ll n, x, y;
+    cin >> n >> x >> y;
 
-    for (int i = 0; i < n; i++) {
-        sum += v[i];
-        mini += (v[i] + x - 1) / x;  
-    }
+    ll c = lcm(x, y);
+    ll only_x=n/x-n /c;
+    ll only_y=n/y-n /c;
 
-    maxi = (sum + x - 1) / x;  
+    ll sum1=only_x * n - (only_x * (only_x - 1)) / 2;
+    ll sum2=(only_y * (only_y + 1)) / 2;
 
-    cout << maxi << " " << mini << "\n";
+    ll ans=sum1-sum2;
+    cout << ans << "\n";
 }
 
 

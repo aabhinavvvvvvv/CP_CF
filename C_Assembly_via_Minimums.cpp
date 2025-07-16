@@ -63,26 +63,27 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-
 void solve() {
-    int n, x; cin >> n >> x;
-    vi v(n);
-    each (i, v) cin >> i;
-    
-    ll mini = 0, maxi = 0;
-    ll sum = 0;
+    int n;
+    cin >> n;
+    int s = n * (n - 1) / 2;
+    vi v(s);
+    each(x, v) cin >> x;
+    sort(all(v));
 
-    for (int i = 0; i < n; i++) {
-        sum += v[i];
-        mini += (v[i] + x - 1) / x;  
+    vi a;
+    int x = n - 1;
+    int idx = 0;
+    while (x > 0) {
+        a.pb(v[idx]);
+        idx += x;
+        x--;
     }
 
-    maxi = (sum + x - 1) / x;  
-
-    cout << maxi << " " << mini << "\n";
+    a.pb(a.back());
+    for (int x : a) cout << x << " ";
+    cout << "\n";
 }
-
-
 
 int main() {
     fastIO();
