@@ -65,31 +65,17 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n;
-        cin >> n;
-        vector<pair<int, int>> v(n + 1);
-        for (int i = 1; i <= n; i++) {
-            cin >> v[i].first;
-            v[i].second = i;
-        }
-        sort(v.begin(), v.end());
-        vector<ll> pref(n + 5);
-        for (int i = 1; i <= n; i++) {
-            pref[i] = pref[i - 1] + v[i].first;
-        }
-        vector<int> ans(n + 5);
-        ans[v[n].second] = n - 1;
-        for (int i = n - 1; i > 0; i--) {
-            if (pref[i] >= v[i + 1].first) {
-                ans[v[i].second] = ans[v[i + 1].second];
-            } else {
-                ans[v[i].second] = i - 1;
-            }
-        }
-
-        for (int i = 1; i <= n; i++) {
-            cout << ans[i] << " \n"[i == n];
-        }
+    int nodes, edges, k;
+    cin >> nodes >> edges >> k;
+    vector<int> adj[nodes+1];
+    rep(i,0,m){
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    vector<int> temp;
+    
 }
 
 int main() {

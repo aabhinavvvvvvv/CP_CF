@@ -15,12 +15,13 @@ using vi = vector<int>;
 using vll = vector<ll>;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-
+using vvi = vector<vi>;
 const ll INF = 1e18;
 const int MOD = 1e9 + 7;
 const int N = 2e5 + 5;
 
 #define pb push_back
+
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
 #define F first
@@ -63,34 +64,38 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-
+void dfs(int node, int c, vi &color, vvi &adj) {
+    color[node] = c;
+    for (int nei : adj[node]) {
+        if (color[nei] == -1) {
+            dfs(nei, 1 - c, color, adj);
+        }
+    }
+}
 void solve() {
     int n;
-        cin >> n;
-        vector<pair<int, int>> v(n + 1);
-        for (int i = 1; i <= n; i++) {
-            cin >> v[i].first;
-            v[i].second = i;
-        }
-        sort(v.begin(), v.end());
-        vector<ll> pref(n + 5);
-        for (int i = 1; i <= n; i++) {
-            pref[i] = pref[i - 1] + v[i].first;
-        }
-        vector<int> ans(n + 5);
-        ans[v[n].second] = n - 1;
-        for (int i = n - 1; i > 0; i--) {
-            if (pref[i] >= v[i + 1].first) {
-                ans[v[i].second] = ans[v[i + 1].second];
-            } else {
-                ans[v[i].second] = i - 1;
-            }
-        }
+    cin >> n;
+    vvi adj(n + 1);
+    rep(i, 0, n - 1) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].pb(v);
+        adj[v].pb(u);
+    }
+    vi color(n + 1, -1);
+    dfs(1, 0, color, adj); 
 
-        for (int i = 1; i <= n; i++) {
-            cout << ans[i] << " \n"[i == n];
-        }
+    int set0 = 0, set1 = 0;
+    rep(i, 1, n + 1) {
+        if (color[i] == 0) set0++;
+        else set1++;
+    }
+
+    ll ans = 1LL * set0 * set1 - (n - 1);
+    cout << ans << '\n';
+
 }
+
 
 int main() {
     fastIO();
@@ -105,7 +110,7 @@ int main() {
 #endif
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) solve();
     return 0;
 }

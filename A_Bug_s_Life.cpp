@@ -63,49 +63,67 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
+int test_case_number = 1;
 
-void solve() {
-    int n;
-        cin >> n;
-        vector<pair<int, int>> v(n + 1);
-        for (int i = 1; i <= n; i++) {
-            cin >> v[i].first;
-            v[i].second = i;
-        }
-        sort(v.begin(), v.end());
-        vector<ll> pref(n + 5);
-        for (int i = 1; i <= n; i++) {
-            pref[i] = pref[i - 1] + v[i].first;
-        }
-        vector<int> ans(n + 5);
-        ans[v[n].second] = n - 1;
-        for (int i = n - 1; i > 0; i--) {
-            if (pref[i] >= v[i + 1].first) {
-                ans[v[i].second] = ans[v[i + 1].second];
-            } else {
-                ans[v[i].second] = i - 1;
+bool check(vector<int>& color, vector<vector<int>>& adj, int node, int curr) {
+    color[node] = curr;
+    for(auto x : adj[node]){
+        if(color[x] == -1){
+            if(!check(color, adj, x, 1 - curr)){
+                return false;
             }
         }
-
-        for (int i = 1; i <= n; i++) {
-            cout << ans[i] << " \n"[i == n];
+        else if(color[x] == curr){
+            return false;
         }
+    }
+    return true;
+}
+
+void solve() {
+    int nodes, edges;
+    cin >> nodes >> edges;
+    vector<vector<int>> adj(nodes + 1);
+    rep(i, 0, edges){
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    vector<int> color(nodes + 1, -1);
+    bool suspicious = false;
+
+    rep(i, 1, nodes + 1){
+        if(color[i] == -1){
+            if(!check(color, adj, i, 0)){
+                suspicious = true;
+                break;
+            }
+        }
+    }
+
+    cout << "Scenario #" << test_case_number++ << ":\n";
+    if(suspicious){
+        cout << "Suspicious bugs found!\n";
+    }
+    else{
+        cout << "No suspicious bugs found!\n";
+    }
 }
 
 int main() {
     fastIO();
 
-    // ✅ Always redirect stderr to Error.txt for debug
     freopen("Error.txt", "w", stderr);
-
 #ifdef LOCAL
-    // ✅ Only redirect input/output during local debugging
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 #endif
 
-    int t = 1;
+    int t;
     cin >> t;
-    while (t--) solve();
+    while(t--) solve();
+
     return 0;
 }
