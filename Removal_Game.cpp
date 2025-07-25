@@ -60,18 +60,60 @@ template<typename K, typename V> void _print(map<K, V> m) {
     for (auto &p : m) _print(p), cerr << ' ';
     cerr << '}';
 }
+ll solveMem(int i, int j, vi& v, vector<vector<ll>>& dp){
+    if(i > j){
+        return 0;
+    }
+    if(i == j){
+        return v[i];
+    }
+    if(dp[i][j] != INF){
+        return dp[i][j];
+    }
+    ll op1 = v[i] + min(solveMem(i+1, j-1, v, dp), solveMem(i+2, j, v, dp));
+    ll op2 = v[j] + min(solveMem(i, j-2, v, dp), solveMem(i+1, j-1, v, dp));
+
+    return dp[i][j] = max(op1, op2);
+}
+ll solveTab(vi& v, int& n) {
+    vector<vector<ll>> dp(n, vector<ll>(n, 0));
+    for (int i = 0; i < n; i++) {
+        dp[i][i] = v[i];
+    }
+
+    for (int i = n - 1; i >= 0; i--) {
+        for (int j = i + 1; j < n; j++) {
+            ll op1 = v[i] + min(
+                (i + 2 <= j ? dp[i + 2][j] : 0),
+                (i + 1 <= j - 1 ? dp[i + 1][j - 1] : 0)
+            );
+
+            ll op2 = v[j] + min(
+                (i <= j - 2 ? dp[i][j - 2] : 0),
+                (i + 1 <= j - 1 ? dp[i + 1][j - 1] : 0)
+            );
+
+            dp[i][j] = max(op1, op2);
+        }
+    }
+
+    return dp[0][n - 1];
+}
 
 void solve() {
     int n;cin>>n;
     vi v(n);
     each(x,v) cin>>x;
+    // vector<vector<ll>> dp(n,vector<ll>(n,INF));
+    // cout << solveMem(0,n-1,v,dp);
+    cout << solveTab(v, n);
     
 }
 
 int main() {
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) solve();
     return 0;
 }
