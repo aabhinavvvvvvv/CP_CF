@@ -25,13 +25,19 @@ const int N = 2e5 + 5;
 #define rall(x) (x).rbegin(), (x).rend()
 #define F first
 #define S second
-#define rep(i,a,b) for(int i=a; i<b; ++i)
-#define per(i,a,b) for(int i=a; i>b; --i)
-#define each(x,a) for(auto &x : a)
+#define rep(i, a, b) for (int i = a; i < b; ++i)
+#define per(i, a, b) for (int i = a; i > b; --i)
+#define each(x, a) for (auto &x : a)
 #define sz(x) (int)(x).size()
-#define fastIO() ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+#define fastIO()                 \
+    ios::sync_with_stdio(false); \
+    cin.tie(nullptr);            \
+    cout.tie(nullptr);
 
-#define debug(x) cerr << #x << " = "; _print(x); cerr << endl;
+#define debug(x)         \
+    cerr << #x << " = "; \
+    _print(x);           \
+    cerr << endl;
 
 void _print(int t) { cerr << t; }
 void _print(long long t) { cerr << t; }
@@ -41,131 +47,97 @@ void _print(char t) { cerr << '\'' << t << '\''; }
 void _print(long double t) { cerr << t; }
 void _print(double t) { cerr << t; }
 
-template <typename T, typename V> void _print(pair<T, V> p);
-template <typename T> void _print(vector<T> v);
-template <typename T> void _print(set<T> v);
-template <typename T> void _print(multiset<T> v);
-template <typename T, typename V> void _print(map<T, V> v);
+template <typename T, typename V>
+void _print(pair<T, V> p);
+template <typename T>
+void _print(vector<T> v);
+template <typename T>
+void _print(set<T> v);
+template <typename T>
+void _print(multiset<T> v);
+template <typename T, typename V>
+void _print(map<T, V> v);
 
 template <typename T, typename V>
-void _print(pair<T, V> p) { cerr << '{'; _print(p.first); cerr << ", "; _print(p.second); cerr << '}'; }
+void _print(pair<T, V> p)
+{
+    cerr << '{';
+    _print(p.first);
+    cerr << ", ";
+    _print(p.second);
+    cerr << '}';
+}
 template <typename T>
-void _print(vector<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
+void _print(vector<T> v)
+{
+    cerr << "[ ";
+    for (T i : v)
+        _print(i), cerr << " ";
+    cerr << "]";
+}
 template <typename T>
-void _print(set<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
+void _print(set<T> v)
+{
+    cerr << "[ ";
+    for (T i : v)
+        _print(i), cerr << " ";
+    cerr << "]";
+}
 template <typename T>
-void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
+void _print(multiset<T> v)
+{
+    cerr << "[ ";
+    for (T i : v)
+        _print(i), cerr << " ";
+    cerr << "]";
+}
 template <typename T, typename V>
-void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
+void _print(map<T, V> v)
+{
+    cerr << "[ ";
+    for (auto i : v)
+        _print(i), cerr << " ";
+    cerr << "]";
+}
 
 /*
  * Bakchodi Mat Kar Laude
- * Chup Chap code kar
+ * Chup Chap code karc
  * I will not be responsible for any damage caused by this code
  */
 
-const int LOG = 18;
+void solve()
+{
+    int n, k;
+    cin >> n >> k;
+    vi nums(n);
+    rep(i, 0, n) cin >> nums[i];
+    int ans = 1;
 
-ll n;
-vector<int> adj[N];
-vector<vector<int>> up;
-vector<int> depth, parent;
-
-void dfs(int node, int par) {
-    parent[node] = par;
-    up[node][0] = par;
-    for (int i = 1; i < LOG; i++) {
-        if (up[node][i - 1] != -1)
-            up[node][i] = up[up[node][i - 1]][i - 1];
-    }
-    for (int child : adj[node]) {
-        if (child != par) {
-            depth[child] = depth[node] + 1;
-            dfs(child, node);
+    long long y = nums[0];
+    for (int i = 1; i < nums.size(); ++i)
+    {
+        int x = nums[i];
+        if (x == 0)
+        {
+            ans =  1;
+            break;
+        }
+        if (x * y <= k)
+        {
+            y *= x;
+            ++ans;
+        }
+        else
+        {
+            y = x;
         }
     }
+    cout<<  n- ans +1 ;
 }
 
-int lca(int u, int v) {
-    if (depth[u] < depth[v]) swap(u, v);
-    for (int i = LOG - 1; i >= 0; i--) {
-        if (up[u][i] != -1 && depth[up[u][i]] >= depth[v])
-            u = up[u][i];
-    }
-    if (u == v) return u;
-    for (int i = LOG - 1; i >= 0; i--) {
-        if (up[u][i] != up[v][i]) {
-            u = up[u][i];
-            v = up[v][i];
-        }
-    }
-    return up[u][0];
-}
-
-vector<int> getPath(int u, int v) {
-    int anc = lca(u, v);
-    vector<int> path1, path2;
-
-    while (u != anc) {
-        path1.push_back(u);
-        u = parent[u];
-    }
-    path1.push_back(anc);
-
-    while (v != anc) {
-        path2.push_back(v);
-        v = parent[v];
-    }
-    reverse(path2.begin(), path2.end());
-    path1.insert(path1.end(), path2.begin(), path2.end());
-    return path1;
-}
-
-ll maxSubarraySum(const vector<ll>& a) {
-    ll maxSum = a[0], curr = a[0];
-    for (size_t i = 1; i < a.size(); i++) {
-        curr = max(curr + a[i], a[i]);
-        maxSum = max(maxSum, curr);
-    }
-    return maxSum;
-}
-
-void solve() {
-    cin >> n;
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        --u, --v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-
-    vector<ll> happiness(n);
-    for (int i = 0; i < n; i++) cin >> happiness[i];
-
-    depth.resize(n);
-    parent.resize(n);
-    up.assign(n, vector<int>(LOG, -1));
-
-    dfs(0, -1);
-
-    int q; cin >> q;
-    while (q--) {
-        int u, v;
-        cin >> u >> v;
-        --u, --v;
-
-        vector<int> path = getPath(u, v);
-        vector<ll> pathValues;
-        for (int node : path)
-            pathValues.push_back(happiness[node]);
-
-        cout << maxSubarraySum(pathValues) << "\n";
-    }
-}
-
-
-int main() {
+int main()
+{
     fastIO();
 
     // ✅ Always redirect stderr to Error.txt for debug
@@ -179,6 +151,7 @@ int main() {
 
     int t = 1;
     // cin >> t;
-    while (t--) solve();
+    while (t--)
+        solve();
     return 0;
 }
