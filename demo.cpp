@@ -39,13 +39,34 @@ const int N = 2e5 + 5;
     _print(x);           \
     cerr << endl;
 
-void _print(int t) { cerr << t; }
-void _print(long long t) { cerr << t; }
-void _print(unsigned long long t) { cerr << t; }
-void _print(string t) { cerr << '"' << t << '"'; }
-void _print(char t) { cerr << '\'' << t << '\''; }
-void _print(long double t) { cerr << t; }
-void _print(double t) { cerr << t; }
+void _print(int t)
+{
+    cerr << t;
+}
+void _print(long long t)
+{
+    cerr << t;
+}
+void _print(unsigned long long t)
+{
+    cerr << t;
+}
+void _print(string t)
+{
+    cerr << '"' << t << '"';
+}
+void _print(char t)
+{
+    cerr << '\'' << t << '\'';
+}
+void _print(long double t)
+{
+    cerr << t;
+}
+void _print(double t)
+{
+    cerr << t;
+}
 
 template <typename T, typename V>
 void _print(pair<T, V> p);
@@ -120,7 +141,7 @@ void solve()
         int x = nums[i];
         if (x == 0)
         {
-            ans =  1;
+            ans = 1;
             break;
         }
         if (x * y <= k)
@@ -129,11 +150,12 @@ void solve()
             ++ans;
         }
         else
+
         {
             y = x;
         }
     }
-    cout<<  n- ans +1 ;
+    cout << n - ans + 1;
 }
 
 int main()
