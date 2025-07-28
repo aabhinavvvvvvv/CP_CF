@@ -64,28 +64,20 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * I will not be responsible for any damage caused by this code
  */
 
-
- void solve() {
-    int n,x;
-    cin>>n>>x;
-    vi v(n);
-    each(x,v)cin>>x;
-        for(int i=0;i<=n-x;++i){
-        bool poss=true;
-        for(int j=0;j<n;++j){
-            if(v[j] && (j<i || j>=i+x)){
-                poss=false;
-                break;
-            }
-        }
-        if(poss){
-            cout<<"YES\n";
-            return;
+void solve() {
+    int n,x;cin>>n>>x;
+    vector<int>v(n);
+    for(auto&y:v)cin>>y;
+    int f=-1,l=-1;
+    for(int i=0;i<n;++i){
+        if(v[i]==1){
+            if(f==-1)f=i;
+            l=i;
         }
     }
-    cout<<"NO\n";
-
-
+    if(f==-1)cout<<"YES\n";
+    else if(l-f+1<=x)cout<<"YES\n";
+    else cout<<"NO\n";
 }
 
 int main() {

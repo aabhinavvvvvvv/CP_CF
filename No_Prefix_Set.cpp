@@ -64,28 +64,21 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * I will not be responsible for any damage caused by this code
  */
 
-
- void solve() {
-    int n,x;
-    cin>>n>>x;
-    vi v(n);
+void solve() {
+    int n;cin>>n;
+    vector<string> v(n);
     each(x,v)cin>>x;
-        for(int i=0;i<=n-x;++i){
-        bool poss=true;
-        for(int j=0;j<n;++j){
-            if(v[j] && (j<i || j>=i+x)){
-                poss=false;
-                break;
-            }
-        }
-        if(poss){
-            cout<<"YES\n";
+    sort(all(v));
+    for(int i = 0;i<n-1;i++){
+        string first = v[i];
+        string second = v[i+1];
+        if(second.substr(0, first.size()) == first){
+            cout<<"BAD SET"<<endl;
+            cout<<second<<endl;
             return;
         }
     }
-    cout<<"NO\n";
-
-
+    cout<<"GOOD SET"<<endl;
 }
 
 int main() {
