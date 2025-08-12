@@ -65,28 +65,20 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n, m; cin >> n >> m;
-    vector<pair<int, int>> edges(m);
-    for (int i = 0; i < n; ++i) {
-        cin >> edges[i].F >> edges[i].S;
+    int n;
+    cin >> n;
+    vi a(n);
+    vi b(n);
+    each(x, a) cin >> x;
+    each(x, b) cin >> x;
+    if(a[n - 1] != b[n - 1]) {
+        cout << "NO" << endl;
+        return;
     }
-    sort(all(edges), [](const pair<int, int> &a, const pair<int, int> &b) {
-        return a.F < b.F || (a.F == b.F && a.S < b.S);
-    });
-    int ans = 0;
-    auto first = edges[0];
-    for(int i = 1; i < n; i++){
-        auto second = edges[i];
-        if(first.second > second.first) {
-            ans++;
-            first.second = max(first.second, second.second);
-        } else {
-            first = second;
-        }
+    unordered_set<int> st;
+    per(i, n, -1){
+        st.insert(a[i] ^ b[i])
     }
-    cout << n - ans << endl;
-
-        
 }
 
 int main() {
@@ -102,7 +94,7 @@ int main() {
 #endif
 
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--) solve();
     return 0;
 }

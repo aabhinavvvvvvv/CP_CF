@@ -65,28 +65,39 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n, m; cin >> n >> m;
-    vector<pair<int, int>> edges(m);
+    int n;
+    cin >>n;
+    vector<int> a(n), b(n);
     for (int i = 0; i < n; ++i) {
-        cin >> edges[i].F >> edges[i].S;
-    }
-    sort(all(edges), [](const pair<int, int> &a, const pair<int, int> &b) {
-        return a.F < b.F || (a.F == b.F && a.S < b.S);
-    });
+        cin >> a[i];
+    }           
+    debug(a);
+    for (int i = 0; i < n; ++i) {
+        cin >> b[i];
+    }           
     int ans = 0;
-    auto first = edges[0];
-    for(int i = 1; i < n; i++){
-        auto second = edges[i];
-        if(first.second > second.first) {
+    while(true){
+        bool dec = false, inc = false;
+            rep(i, 0, n){
+                if (a[i] > b[i]) dec = true;
+            }
+            rep(i, 0, n){
+                 if (a[i] < b[i]) inc = true;
+            }
             ans++;
-            first.second = max(first.second, second.second);
-        } else {
-            first = second;
-        }
+            if (dec) {
+                rep(i, 0, n){
+                     if (a[i] > b[i]) { a[i]--; break; }
+                }
+            }
+            if (inc) {
+                rep(i, 0, n){
+                    if (a[i] < b[i]) { a[i]++; break; }
+                }
+            }
+            if (!dec) break;
     }
-    cout << n - ans << endl;
-
-        
+    cout<< ans<<endl;
 }
 
 int main() {
@@ -102,7 +113,7 @@ int main() {
 #endif
 
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--) solve();
     return 0;
 }

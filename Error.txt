@@ -1,8 +1,4 @@
-s1 = {name: Abhinav, cgpa: 0x11620d8}
-s2 = {name: Abhinav, cgpa: 0x11620e8}
-*s1.cgpa = 9
-*s2.cgpa = 9
-s1 = {name: Abhinav, cgpa: 0x11620d8}
-s2 = {name: Abhinav, cgpa: 0x11620e8}
-*s1.cgpa = 9
-*s2.cgpa = 10
+a = [ 0 0 ]
+a = [ 0 0 0 ]
+a = [ 0 ]
+a = [ 0 0 0 0 0 0 ]
