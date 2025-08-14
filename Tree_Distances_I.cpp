@@ -63,49 +63,67 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-int n, q;
-vector<vi> dp;
-vector<vi> adj;
-
-void dfs(int node, int parent) {
-    dp[node][0] = parent;
-    for (int i = 1; i < 20; ++i) {
-        if (dp[node][i - 1] != -1)
-            dp[node][i] = dp[dp[node][i - 1]][i - 1];
-    }
+void dfs(int node, int parent, vector<vi>& adj, vector<int>& dist) {
     for (auto x : adj[node]) {
         if (x != parent) {
-            dfs(x, node);
+            dist[x] = dist[node] + 1;
+            dfs(x, node, adj, dist);
+        }
+    }
+}
+
+void dfs1(int node, int parent, vector<vi>& adj, vector<int>& dist, int d) {
+    dist[node] = d;
+    for (auto x : adj[node]) {
+        if (x != parent) {
+            dfs1(x, node, adj, dist, d + 1);
         }
     }
 }
 
 void solve() {
-    cin >> n >> q;
-    adj.assign(n, {});
-    dp.assign(n, vi(20, -1));
-
+    int n; cin >> n;
+    vector<vi> adj(n);
     for (int i = 0; i < n - 1; ++i) {
-        int u;
-        cin >> u;
-        int v = i + 1;
-        u--;
+        int u, v; cin >> u >> v;
+        u--; v--;
         adj[u].pb(v);
         adj[v].pb(u);
     }
 
-    dfs(0, -1);
+    vector<int> dist1(n, 0);
+    dfs(0, -1, adj, dist1);
 
-    while (q--) {
-        int u, k;
-        cin >> u >> k;
-        u--;
-        for (int i = 0; i < 20 ; ++i) {
-            if ( u != -1 && k & (1 << i))
-                u = dp[u][i];
+    int di_st = 0; 
+    for (int i = 0; i < n; ++i) {
+        if (dist1[i] > dist1[di_st]) {
+            di_st = i;
         }
-        if (u == -1) cout << -1 << "\n";
-        else cout << u + 1 << "\n";
+    }
+
+    vector<int> dist2(n, 0);
+    dfs(di_st, -1, adj, dist2);
+
+    int di_st2 = di_st; 
+    for (int i = 0; i < n; ++i) {
+        if (dist2[i] > dist2[di_st2]) {
+            di_st2 = i;
+        }
+    }
+
+    vector<int> dist_from_di_st(n, 0);
+    dfs1(di_st, -1, adj, dist_from_di_st, 0);
+
+    vector<int> dist_from_di_st2(n, 0);
+    dfs1(di_st2, -1, adj, dist_from_di_st2, 0);
+
+    vector<int> ans(n, 0);
+    for (int i = 0; i < n; ++i) {
+        ans[i] = max(dist_from_di_st[i], dist_from_di_st2[i]);
+    }
+
+    for (int i = 0; i < n; ++i) {
+        cout << ans[i] << " ";
     }
 }
 int main() {

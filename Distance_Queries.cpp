@@ -63,51 +63,71 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-int n, q;
-vector<vi> dp;
-vector<vi> adj;
-
-void dfs(int node, int parent) {
-    dp[node][0] = parent;
-    for (int i = 1; i < 20; ++i) {
-        if (dp[node][i - 1] != -1)
-            dp[node][i] = dp[dp[node][i - 1]][i - 1];
+void dfs(int node, int parent, vector<vector<int>>& dp, vector<vector<int>>& adj, vector<int>& depth){
+    if(parent == -1){
+        depth[node] = 0;
+    } else {
+        depth[node] = depth[parent] + 1;
     }
-    for (auto x : adj[node]) {
-        if (x != parent) {
-            dfs(x, node);
+    dp[node][0] = parent;
+    for(int i = 1; i < 20; i++){
+        if(dp[node][i - 1] != -1){
+            dp[node][i] = dp[dp[node][i - 1]][i - 1];
+        }
+    }
+    for(auto x : adj[node]){
+        if(x != parent){
+            dfs(x, node, dp, adj, depth);
         }
     }
 }
+int findlca(int u, int v, vector<vector<int>>& dp, vector<int>& depth){
+    if(u == v) return u;
+    if(depth[u] < depth[v]) swap(u, v);
+    int diff = depth[u] - depth[v];
+    for(int i = 19; i >= 0; i--){
+        if((1 << i) & diff){
+            u = dp[u][i];
+        }
+    }
+    for(int i = 19; i >= 0; i--){
+        if(dp[u][i] != -1 && dp[v][i] != -1 && dp[u][i] != dp[v][i]){
+            u = dp[u][i];
+            v = dp[v][i];
+        }
+    }
+    if(u == v) return u;
+    return dp[u][0];
 
+}
 void solve() {
-    cin >> n >> q;
-    adj.assign(n, {});
-    dp.assign(n, vi(20, -1));
-
-    for (int i = 0; i < n - 1; ++i) {
-        int u;
-        cin >> u;
-        int v = i + 1;
+    int n, q; cin >> n >> q;
+    vector<vector<int>> adj(n);
+    for(int i = 0; i < n - 1; i++){
+        int u, v; cin >> u >> v;
         u--;
+        v--;
         adj[u].pb(v);
         adj[v].pb(u);
     }
-
-    dfs(0, -1);
-
-    while (q--) {
-        int u, k;
-        cin >> u >> k;
+    vector<vector<int>> dp(n, vector<int>(20, -1));
+    vector<int> depth(n, 0);
+    dfs(0, -1, dp, adj, depth);
+    while(q--){
+        int u, v; cin >> u >> v;
         u--;
-        for (int i = 0; i < 20 ; ++i) {
-            if ( u != -1 && k & (1 << i))
-                u = dp[u][i];
-        }
-        if (u == -1) cout << -1 << "\n";
-        else cout << u + 1 << "\n";
+        v--;
+        // if(u == v) {
+        //     cout << u + 1 << "\n";
+        //     continue;
+        // }
+        int lca = findlca(u, v, dp, depth);
+        int ans = depth[u] + depth[v] - 2 * depth[lca];
+        cout << ans << "\n";
     }
 }
+
+
 int main() {
     fastIO();
 
