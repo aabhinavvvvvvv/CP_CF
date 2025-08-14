@@ -9,79 +9,99 @@
 using namespace std;
 
 using ll = long long;
-using ull = unsigned long long;
-using ld = long double;
-using vi = vector<int>;
-using vll = vector<ll>;
-using pii = pair<int, int>;
-using pll = pair<ll, ll>;
+using pii = pair<int,int>;
 
-const ll INF = 1e18;
-const int MOD = 1e9 + 7;
 const int N = 2e5 + 5;
+const int LOG = 20;
 
-#define pb push_back
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define F first
-#define S second
-#define rep(i,a,b) for(int i=a; i<b; ++i)
-#define per(i,a,b) for(int i=a; i>b; --i)
-#define each(x,a) for(auto &x : a)
-#define sz(x) (int)(x).size()
-#define fastIO() ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+vector<vector<pii>> up; // {ancestor, minValueOnPath}
+vector<int> depth;
+vector<vector<int>> adj;
+vector<int> arr; // values assigned to nodes
 
-#define debug(x) cerr << #x << " = "; _print(x); cerr << endl;
+void dfs(int node, int parent) {
+    // up[node][0] → (parent, minValue on 1 jump)
+    up[node][0] = { parent, (parent == -1 ? arr[node] : min(arr[node], arr[parent])) };
 
-void _print(int t) { cerr << t; }
-void _print(long long t) { cerr << t; }
-void _print(unsigned long long t) { cerr << t; }
-void _print(string t) { cerr << '"' << t << '"'; }
-void _print(char t) { cerr << '\'' << t << '\''; }
-void _print(long double t) { cerr << t; }
-void _print(double t) { cerr << t; }
+    // fill binary lifting table for node
+    for (int j = 1; j < LOG; j++) {
+        int mid_ancestor = up[node][j - 1].first;
+        if (mid_ancestor != -1) {
+            up[node][j].first = up[mid_ancestor][j - 1].first;
+            up[node][j].second = min(up[node][j - 1].second, up[mid_ancestor][j - 1].second);
+        }
+    }
 
-template <typename T, typename V> void _print(pair<T, V> p);
-template <typename T> void _print(vector<T> v);
-template <typename T> void _print(set<T> v);
-template <typename T> void _print(multiset<T> v);
-template <typename T, typename V> void _print(map<T, V> v);
+    for (auto nxt : adj[node]) {
+        if (nxt == parent) continue;
+        depth[nxt] = depth[node] + 1;
+        dfs(nxt, node);
+    }
+}
 
-template <typename T, typename V>
-void _print(pair<T, V> p) { cerr << '{'; _print(p.first); cerr << ", "; _print(p.second); cerr << '}'; }
-template <typename T>
-void _print(vector<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
-template <typename T>
-void _print(set<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
-template <typename T>
-void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
-template <typename T, typename V>
-void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
+pii findlca_min(int u, int v) {
+    int minVal = min(arr[u], arr[v]); // initial min is their own values
 
-/*
- * Bakchodi Mat Kar Laude
- * Chup Chap code kar
- * I will not be responsible for any damage caused by this code
- */
+    if (depth[u] < depth[v]) swap(u, v);
+    int diff = depth[u] - depth[v];
+
+    for (int i = 0; i < LOG; ++i) {
+        if (diff & (1 << i)) {
+            minVal = min(minVal, up[u][i].second);
+            u = up[u][i].first;
+        }
+    }
+
+    if (u == v) return {u, minVal};
+
+    for (int i = LOG - 1; i >= 0; --i) {
+        if (up[u][i].first != -1 && up[u][i].first != up[v][i].first) {
+            minVal = min(minVal, up[u][i].second);
+            minVal = min(minVal, up[v][i].second);
+            u = up[u][i].first;
+            v = up[v][i].first;
+        }
+    }
+
+    // final step: check parent of u and v
+    minVal = min(minVal, up[u][0].second);
+    minVal = min(minVal, up[v][0].second);
+
+    return { up[u][0].first, minVal };
+}
 
 void solve() {
-    
+    int n, q;
+    cin >> n >> q;
+    arr.resize(n);
+    for (int i = 0; i < n; i++) cin >> arr[i];
+
+    adj.assign(n, {});
+    depth.assign(n, 0);
+    up.assign(n, vector<pii>(LOG, {-1, INT_MAX}));
+
+    for (int i = 0; i < n - 1; i++) {
+        int u, v; cin >> u >> v;
+        --u; --v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    dfs(0, -1);
+
+    while (q--) {
+        int u, v; cin >> u >> v;
+        --u; --v;
+        pii res = findlca_min(u, v);
+        int lca = res.first;
+        int minVal = res.second;
+        int dist = depth[u] + depth[v] - 2 * depth[lca];
+        cout << dist << " " << minVal << "\n";
+    }
 }
 
 int main() {
-    fastIO();
-
-    // ✅ Always redirect stderr to Error.txt for debug
-    freopen("Error.txt", "w", stderr);
-
-#ifdef LOCAL
-    // ✅ Only redirect input/output during local debugging
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
-#endif
-
-    int t = 1;
-    cin >> t;
-    while (t--) solve();
-    return 0;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
 }

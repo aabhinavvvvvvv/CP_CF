@@ -117,10 +117,7 @@ void solve() {
         int u, v; cin >> u >> v;
         u--;
         v--;
-        // if(u == v) {
-        //     cout << u + 1 << "\n";
-        //     continue;
-        // }
+
         int lca = findlca(u, v, dp, depth);
         int ans = depth[u] + depth[v] - 2 * depth[lca];
         cout << ans << "\n";
