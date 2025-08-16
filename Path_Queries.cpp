@@ -63,46 +63,87 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-
-void dfs(int node, int parent, vector<vi>& adj, vector<int>& dis, int d){
-    dis[node] = d;
-    for(auto x : adj[node]){
-        if(x != parent){
-            dfs(x, node, adj, dis, d + 1);
-        }
+vector<ll> segtree;
+int timerGlobal = 0;
+void dfs(int node, int parent, const vector<vi>& adj, vi &intime, vi &outtime, vll &eulertour, vll &a) {
+    intime[node] = timerGlobal;
+    eulertour[timerGlobal] = a[node];   
+    ++timerGlobal;
+    for (int v : adj[node]) {
+        if (v == parent) continue;
+        dfs(v, node, adj, intime, outtime, eulertour, a);
     }
+    outtime[node] = timerGlobal;
+    eulertour[timerGlobal] = -a[node];  
+    ++timerGlobal;
 }
+void build(int node, int st, int end, const vll &eulertour) {
+    if (st == end) {
+        segtree[node] = eulertour[st];
+        return;
+    }
+    int mid = (st + end) >> 1;
+    build(node << 1, st, mid, eulertour);
+    build(node << 1 | 1, mid + 1, end, eulertour);
+    segtree[node] = segtree[node << 1] + segtree[node << 1 | 1];
+}
+
+void update_point(int node, int st, int end, int idx, ll val) {
+    if (st == end) {
+        segtree[node] = val;
+        return;
+    }
+    int mid = (st + end) >> 1;
+    if (idx <= mid) update_point(node << 1, st, mid, idx, val);
+    else update_point(node << 1 | 1, mid + 1, end, idx, val);
+    segtree[node] = segtree[node << 1] + segtree[node << 1 | 1];
+}
+
+ll query_range(int node, int st, int end, int l, int r) {
+    if (r < st || end < l) return 0;
+    if (l <= st && end <= r) return segtree[node];
+    int mid = (st + end) >> 1;
+    return query_range(node << 1, st, mid, l, r) + query_range(node << 1 | 1, mid + 1, end, l, r);
+}
+
 void solve() {
-    int n; cin >> n;
+    int n, q;
+    cin >> n >> q;
+    vll a(n);
+    rep(i,0,n) cin >> a[i];
+
     vector<vi> adj(n);
-    rep(i,0,n - 1) {
+    rep(i,0,n-1){
         int u, v; cin >> u >> v;
-        --u; --v;
+        --u; --v;          
         adj[u].pb(v);
         adj[v].pb(u);
     }
-    vector<int> dis1(n, 0), dis2(n, 0);
-    dfs(0, -1, adj, dis1, 0); 
-    int st = 0;
-    for(int i = 0; i < n; ++i) {
-        if (dis1[i] > dis1[st]) st = i;
+    int m = 2 * n;
+    vi intime(n), outtime(n);
+    vll eulertour(m, 0);
+
+    timerGlobal = 0;
+    dfs(0, -1, adj, intime, outtime, eulertour, a);
+
+    segtree.assign(4 * m + 5, 0);
+    build(1, 0, m - 1, eulertour);
+
+    while (q--) {
+        int type; cin >> type;
+        if (type == 1) {
+            int u; ll x;
+            cin >> u >> x;
+            --u;
+            update_point(1, 0, m - 1, intime[u], x);
+            update_point(1, 0, m - 1, outtime[u], -x);
+            a[u] = x;
+        } else {
+            int u; cin >> u; --u;
+            ll ans = query_range(1, 0, m - 1, 0, intime[u]);
+            cout << ans << '\n';
+        }
     }
-    dfs(st, -1, adj, dis2, 0);
-    int end = 0;
-    for(int i = 0; i < n; ++i) {
-        if (dis2[i] > dis2[end]) end = i;
-    }   
-    vector<int> st_dist(n, 0);
-    vector<int> end_dist(n, 0);
-    dfs(st, -1, adj, st_dist, 0);
-    dfs(end, -1, adj, end_dist, 0);
-    for(int i = 0; i < n; ++i) {
-        cout << max(st_dist[i], end_dist[i]) << " ";
-    }
-
-
-
-
 }
 
 int main() {

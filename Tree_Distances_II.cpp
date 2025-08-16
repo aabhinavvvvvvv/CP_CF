@@ -64,45 +64,45 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * I will not be responsible for any damage caused by this code
  */
 
-void dfs(int node, int parent, vector<vi>& adj, vector<int>& dis, int d){
-    dis[node] = d;
-    for(auto x : adj[node]){
-        if(x != parent){
-            dfs(x, node, adj, dis, d + 1);
-        }
+// int ansfor0 = 0;
+void dfs(int node, int par, vector<vi>& adj, vi& subtree, vi& dis){
+    if(par == -1) dis[node] = 0;
+    else dis[node] = dis[par] + 1;
+    subtree[node] = 1;
+    for (int x : adj[node]) if (x != par) {
+        dfs(x, node, adj, subtree, dis);
+        subtree[node] += subtree[x];
     }
 }
+
+void reroot(int node, int par, vector<vi>& adj, const vi& subtree, vll& ans, int n){
+    for (int x : adj[node]) if (x != par) {
+        ans[x] = ans[node] + (ll)n - 2LL * subtree[x];
+        reroot(x, node, adj, subtree, ans, n);
+    }
+}
+
 void solve() {
     int n; cin >> n;
     vector<vi> adj(n);
-    rep(i,0,n - 1) {
-        int u, v; cin >> u >> v;
+    rep(i,0,n-1){
+        int u,v; cin >> u >> v;
         --u; --v;
         adj[u].pb(v);
         adj[v].pb(u);
     }
-    vector<int> dis1(n, 0), dis2(n, 0);
-    dfs(0, -1, adj, dis1, 0); 
-    int st = 0;
-    for(int i = 0; i < n; ++i) {
-        if (dis1[i] > dis1[st]) st = i;
+
+    vi subtree(n,0), dis(n,0);
+    dfs(0, -1, adj, subtree, dis);
+
+    vll ans(n, 0);
+    ans[0] = accumulate(all(dis), 0LL); 
+
+    reroot(0, -1, adj, subtree, ans, n);
+
+    rep(i,0,n){
+        cout << ans[i] << (i+1==n?'\n':' ');
     }
-    dfs(st, -1, adj, dis2, 0);
-    int end = 0;
-    for(int i = 0; i < n; ++i) {
-        if (dis2[i] > dis2[end]) end = i;
-    }   
-    vector<int> st_dist(n, 0);
-    vector<int> end_dist(n, 0);
-    dfs(st, -1, adj, st_dist, 0);
-    dfs(end, -1, adj, end_dist, 0);
-    for(int i = 0; i < n; ++i) {
-        cout << max(st_dist[i], end_dist[i]) << " ";
-    }
-
-
-
-
 }
 
 int main() {
