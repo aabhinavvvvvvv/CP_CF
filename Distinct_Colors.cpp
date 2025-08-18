@@ -19,7 +19,6 @@ using pll = pair<ll, ll>;
 const ll INF = 1e18;
 const int MOD = 1e9 + 7;
 const int N = 2e5 + 5;
-const int LOG = 20; // log2(2e5) ≈ 18
 
 #define pb push_back
 #define all(x) (x).begin(), (x).end()
@@ -59,71 +58,60 @@ void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " ";
 template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
-int n, q;
-vector<vi> adj;
-vector<int> depth;
-vector<vi> up;
+/*
+ * Bakchodi Mat Kar Laude
+ * Chup Chap code kar
+ * I will not be responsible for any damage caused by this code
+ */
 
-void dfs(int v, int p) {
-    up[v][0] = p;
-    for (int i = 1; i < LOG; i++) {
-        if (up[v][i-1] != -1)
-            up[v][i] = up[up[v][i-1]][i-1];
-        else
-            up[v][i] = -1;
-    }
-    for (int u : adj[v]) {
-        if (u == p) continue;
-        depth[u] = depth[v] + 1;
-        dfs(u, v);
-    }
-}
-
-int lca(int a, int b) {
-    if (depth[a] < depth[b]) swap(a, b);
-    int diff = depth[a] - depth[b];
-    for (int i = LOG-1; i >= 0; i--) {
-        if ((diff >> i) & 1) {
-            a = up[a][i];
+void dfs(int node, int parent, vector<vi>& adj, unordered_set<int> st[], vector<int>& ans) {
+    for(auto x : adj[node]){
+        if(x != parent){
+            dfs(x, node, adj, st, ans);
+            if(st[node].size() < st[x].size()){
+                swap(st[node], st[x]);
+            }
+            for(auto y : st[x]){
+                st[node].insert(y);
+            }
         }
     }
-    if (a == b) return a;
-    for (int i = LOG-1; i >= 0; i--) {
-        if (up[a][i] != up[b][i]) {
-            a = up[a][i];
-            b = up[b][i];
-        }
-    }
-    return up[a][0];
-}
+    ans[node] = st[node].size();
 
+}
 void solve() {
-    cin >> n >> q;
-    adj.assign(n, {});
-    depth.assign(n, 0);
-    up.assign(n, vector<int>(LOG, -1));
-
-    for (int i = 0; i < n-1; i++) {
-        int u, v;
-        cin >> u >> v;
-        u--, v--;
+    int n; cin >> n;
+    unordered_set<int> st[n];
+    vi val(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> val[i];
+        st[i].insert(val[i]);
+    }
+    vector<vi> adj(n);
+    for(int i = 0; i < n - 1; i++){
+        int u, v; cin >> u >> v;
+        u--,v--;
         adj[u].pb(v);
         adj[v].pb(u);
     }
-
-    dfs(0, -1);
-
-    while (q--) {
-        int u, v;
-        cin >> u >> v;
-        u--, v--;
-        cout << depth[u] + depth[v] - 2 * depth[lca(u, v)]  << "\n";
+    vector<int> ans(n);
+    dfs(0, -1, adj, st, ans);
+    for(int i = 0; i < n; ++i) {
+        cout << ans[i] << " ";
     }
 }
 
 int main() {
     fastIO();
+
+    // ✅ Always redirect stderr to Error.txt for debug
     freopen("Error.txt", "w", stderr);
+
+#ifdef LOCAL
+    // ✅ Only redirect input/output during local debugging
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
 
     int t = 1;
     // cin >> t;

@@ -63,47 +63,40 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
-void dfs(int node, vector<vector<int>>& adj, int parent, vector<int>& subtree, vector<int>& depth, int d) {
-    subtree[node] = 1;
+void dfs(int node, int parent, vector<vi>& adj, vector<int>& subtree, vector<int>& depth, int d) {
     depth[node] = d;
-    for (auto x : adj[node]) {
-        if (x != parent) {
-            dfs(x, adj, node, subtree, depth, d + 1);
-            subtree[node] += subtree[x];
-        }
+    subtree[node] = 1; 
+    for (int neighbor : adj[node]) {
+        if (neighbor == parent) continue;
+        dfs(neighbor, node, adj, subtree, depth, d + 1);
+        subtree[node] += subtree[neighbor];
     }
 }
-
 void solve() {
-    int n, k;
-    cin >> n >> k;
-
-    vector<vector<int>> adj(n + 1);
-    rep(i, 0, n - 1) {
-        int u, v;
-        cin >> u >> v;
+    int n, k; cin >> n >> k;
+    vector<vi> adj(n);
+    for(int i = 0; i < n - 1; i++){
+        int u, v; cin >> u >> v;
+        u--, v--;
         adj[u].pb(v);
         adj[v].pb(u);
     }
-
-    vector<int> subtree(n + 1), depth(n + 1, -1);
-    dfs(1, adj, -1, subtree, depth, 0);
+    vector<int> depth(n, 0);
+    vector<int> subtree(n, 0);
+    int d = 0;
+    dfs(0, -1, adj, subtree, depth, d);
     vector<int> nodes(n);
-    rep(i, 0, n) nodes[i] = i + 1;
-
-    sort(all(nodes), [&](int a, int b) {
-        return (depth[a] - subtree[a]) > (depth[b] - subtree[b]);
+    iota(all(nodes), 0);
+    sort(all(nodes), [&](int a, int b){
+        return depth[a] - subtree[a] > depth[b] - subtree[b]; 
     });
-
-    ll ans = 0;
-    rep(i, 0, k) {
-        ans += depth[nodes[i]] - subtree[nodes[i]] + 1; 
+    long long ans = 0;
+    for(int i= 0; i < k ; i++){
+        ans += depth[nodes[i]] - subtree[nodes[i]] + 1;
     }
-
-    cout << ans << endl;
+    cout << ans << "\n";
 }
 
- 
 int main() {
     fastIO();
 
