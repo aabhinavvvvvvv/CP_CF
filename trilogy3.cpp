@@ -63,47 +63,27 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  * Chup Chap code kar
  * I will not be responsible for any damage caused by this code
  */
+int gcd(int a, int b){
+    if(b == 0) return a;
+    return gcd(b, a % b);
+}
 
 void solve() {
-    // int n , m;
-    // cin >> n;
-    vector<string> v1 = {"123", "4", "5"};
-    // for(auto &x : v1) cin >> x;
-    // cin >> m;
-    vector<string> v2 = {"100", "100", "100"};
-    // for(auto &x : v2) cin >> x;
+    vector<string> vec = {"2/6+2/6", "7/10+13/10"};
 
     vector<string> ans;
-    int i = v1.size() - 1;
-    int j = v2.size() - 1;
-    int carry = 0;
-    while(i >= 0 || j >= 0 || carry){
-        int sum = carry;
-        if(i >= 0){
-            sum += stoi(v1[i]);
-            i--;
-        }
-        if(j >= 0){
-            sum += stoi(v2[j]);
-            j--;
-        }
-        // if(carry){
-        //     sum += carry;
-        //     carry = 0;
-        // }
-        carry = sum / 10000;
-        sum = sum % 10000;
-
-        ans.push_back(to_string(sum));
-
+    for(auto q : vec){
+        stringstream ss(q);
+        string x, slash1, y, plus, u, slash2, v;
+        ss >> x >> slash1 >> y >> plus >> u >> slash2 >> v;
+        int denominator = stoi(y) * stoi(v);
+        int numerator = stoi(x) * stoi(v) + stoi(u) * stoi(y);
+        int g = gcd(numerator, denominator);
+        numerator /= g;
+        denominator /= g;
+        ans.push_back(to_string(numerator) + "/" + to_string(denominator));
     }
-    // cout << ans << endl;
-    reverse(begin(ans), end(ans));
-    for(auto x : ans){
-        cout << x << " ";
-    }
-    cout << endl;
-
+    for(auto x : ans) cout << x << "\n";
 }
 
 int main() {
