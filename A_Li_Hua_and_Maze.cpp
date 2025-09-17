@@ -65,29 +65,15 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n; cin >> n;
-    vi v(n);
-    each(x, v) cin >> x;
-
-    vi prefix(n);
-    prefix[0] = v[0];
-    rep(i, 1, n) prefix[i] = prefix[i - 1] + v[i];
-
-    for (int i = 0; i < n - 2; i++) {
-        for (int j = i + 1; j < n - 1; j++) {
-            int s1 = prefix[i] % 3;
-            int s2 = (prefix[j] - prefix[i]) % 3;
-            int s3 = (prefix[n - 1] - prefix[j]) % 3;
-
-            if ((s1 == s2 && s2 == s3) || 
-                (s1 != s2 && s2 != s3 && s1 != s3)) {
-                cout << i + 1 << " " << j + 1 << "\n";
-                return; 
-            }
-        }
-    }
-
-    cout << "0 0\n";
+    int n, m; cin >> n >> m;
+    int x1, y1, x2, y2;
+    cin >> x1 >> y1 >> x2 >> y2;
+    int ans1 = 4, ans2 = 4;
+    if (x1 == 1 || x1 == n) ans1--;
+    if (y1 == 1 || y1 == m) ans1--;
+    if (x2 == 1 || x2 == n) ans2--;
+    if (y2 == 1 || y2 == m) ans2--;
+    cout << min(ans1, ans2) << "\n";
 }
 
 int main() {
@@ -97,11 +83,12 @@ int main() {
     freopen("Error.txt", "w", stderr);
 
 #ifdef LOCAL
+    // ✅ Only redirect input/output during local debugging
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 #endif
 
-    int t;
+    int t = 1;
     cin >> t;
     while (t--) solve();
     return 0;
