@@ -1,214 +1,37 @@
-
-// 1. Producer–Consumer using Dekker’s Algorithm
-#include <iostream>
-#include <thread>
-#include <atomic>
-#include <vector>
-#include <chrono>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-const int N = 5; 
-int buffer[N];
-int in = 0, out = 0, countItems = 0;
-
-atomic<bool> flag[2];
-atomic<int> turn(0);
-
-void dekkerLock(int id) {
-    int other = 1 - id;
-    flag[id] = true;
-    while (flag[other]) {
-        if (turn != id) {
-            flag[id] = false;
-            while (turn != id); 
-            flag[id] = true;
-        }
+int flipDigits(int x) {
+    int res = 0;
+    while (x > 0) {
+        res = res * 10 + x % 10;
+        x /= 10;
     }
+    return res;
 }
 
-void dekkerUnlock(int id) {
-    turn = 1 - id;
-    flag[id] = false;
-}
-
-void producer() {
-    for (int item = 1; item <= 10; item++) {
-        this_thread::sleep_for(chrono::milliseconds(100));
-        dekkerLock(0);
-        if (countItems < N) {
-            buffer[in] = item;
-            in = (in + 1) % N;
-            countItems++;
-            cout << "Producer produced " << item << endl;
-        }
-        dekkerUnlock(0);
+int countSpecialPairs(vector<int>& arr) {
+    unordered_map<int, long long> freq;
+    
+    for (int x : arr) {
+        int key = x - flipDigits(x);
+        freq[key]++;
     }
-}
-
-void consumer() {
-    for (int i = 1; i <= 10; i++) {
-        this_thread::sleep_for(chrono::milliseconds(150));
-        dekkerLock(1);
-        if (countItems > 0) {
-            int item = buffer[out];
-            out = (out + 1) % N;
-            countItems--;
-            cout << "Consumer consumed " << item << endl;
-        }
-        dekkerUnlock(1);
+    
+    long long total = 0;
+    for (auto& a : freq) {
+        total += a.second * (a.second + 1) / 2; // pairs with i <= j
     }
+    
+    return total;
 }
 
 int main() {
-    thread t1(producer), t2(consumer);
-    t1.join();
-    t2.join();
-    return 0;
-}
+    vector<int> arr1 = {1, 20, 2, 11};
+    cout << countSpecialPairs(arr1) << "\n"; // Output: 7
 
+    vector<int> arr2 = {32, 332, 100};
+    cout << countSpecialPairs(arr2) << "\n"; // Output: 4
 
-// 2. Producer–Consumer using Peterson’s Algorithm
-#include <iostream>
-#include <thread>
-#include <atomic>
-#include <vector>
-#include <chrono>
-
-using namespace std;
-
-const int N = 5;
-int buffer[N];
-int in = 0, out = 0, countItems = 0;
-
-atomic<bool> flag[2];
-atomic<int> turn;
-
-void petersonLock(int id) {
-    int other = 1 - id;
-    flag[id] = true;
-    turn = other;
-    while (flag[other] && turn == other); 
-}
-
-void petersonUnlock(int id) {
-    flag[id] = false;
-}
-
-void producer() {
-    for (int item = 1; item <= 10; item++) {
-        this_thread::sleep_for(chrono::milliseconds(100));
-        petersonLock(0);
-        if (countItems < N) {
-            buffer[in] = item;
-            in = (in + 1) % N;
-            countItems++;
-            cout << "Producer produced " << item << endl;
-        }
-        petersonUnlock(0);
-    }
-}
-
-void consumer() {
-    for (int i = 1; i <= 10; i++) {
-        this_thread::sleep_for(chrono::milliseconds(150));
-        petersonLock(1);
-        if (countItems > 0) {
-            int item = buffer[out];
-            out = (out + 1) % N;
-            countItems--;
-            cout << "Consumer consumed " << item << endl;
-        }
-        petersonUnlock(1);
-    }
-}
-
-
-// 3. Producer–Consumer using Lamport’s Bakery Algorithm
-int main() {
-    flag[0] = flag[1] = false;
-    turn = 0;
-    thread t1(producer), t2(consumer);
-    t1.join();
-    t2.join();
-    return 0;
-}
-#include <iostream>
-#include <thread>
-#include <vector>
-#include <atomic>
-#include <chrono>
-
-using namespace std;
-
-const int N = 5;  
-int buffer[N];
-int in = 0, out = 0, countItems = 0;
-
-const int THREADS = 2; 
-atomic<bool> choosing[THREADS];
-atomic<int> number[THREADS];
-
-int maxNumber() {
-    int mx = 0;
-    for (int i = 0; i < THREADS; i++)
-        mx = max(mx, number[i].load());
-    return mx;
-}
-
-void bakeryLock(int id) {
-    choosing[id] = true;
-    number[id] = 1 + maxNumber();
-    choosing[id] = false;
-
-    for (int j = 0; j < THREADS; j++) {
-        if (j == id) continue;
-        while (choosing[j]); 
-        while (number[j] != 0 && 
-              (number[j] < number[id] || 
-              (number[j] == number[id] && j < id)));
-    }
-}
-
-void bakeryUnlock(int id) {
-    number[id] = 0;
-}
-
-void producer() {
-    for (int item = 1; item <= 10; item++) {
-        this_thread::sleep_for(chrono::milliseconds(100));
-        bakeryLock(0);
-        if (countItems < N) {
-            buffer[in] = item;
-            in = (in + 1) % N;
-            countItems++;
-            cout << "Producer produced " << item << endl;
-        }
-        bakeryUnlock(0);
-    }
-}
-
-void consumer() {
-    for (int i = 1; i <= 10; i++) {
-        this_thread::sleep_for(chrono::milliseconds(150));
-        bakeryLock(1);
-        if (countItems > 0) {
-            int item = buffer[out];
-            out = (out + 1) % N;
-            countItems--;
-            cout << "Consumer consumed " << item << endl;
-        }
-        bakeryUnlock(1);
-    }
-}
-
-int main() {
-    for (int i = 0; i < THREADS; i++) {
-        choosing[i] = false;
-        number[i] = 0;
-    }
-    thread t1(producer), t2(consumer);
-    t1.join();
-    t2.join();
     return 0;
 }
