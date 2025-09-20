@@ -18,7 +18,7 @@ using pll = pair<ll, ll>;
 
 const ll INF = 1e18;
 const int MOD = 1e9 + 7;
-const int N = 2e5 + 5;
+const int n = 2e5 + 5;
 
 #define pb push_back
 #define all(x) (x).begin(), (x).end()
@@ -65,25 +65,23 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n; cin >> n; 
-    vi v(n); each(x, v) cin >> x;
-    int pairs = 0;
-    // int mainam();
-    unordered_set<string> st;
-    for(auto x : v){
-        string num = to_string(x);
-        for(int i = 0; i < sz(num); i++){
-            string temp = num;
-            for(char ch = '0'; ch <= '9'; ch++){
-                temp[i] = ch;
-                if(st.find(temp) != st.end() && temp != num){
-                    pairs++;
-                }
-            }
-        }
-        st.insert(num);
+    int n; cin >> n;
+    if(n == 1){
+        cout << "1 1\n";
     }
-    cout << pairs / 2 << "\n";
+    else if(n == 2){
+        cout << "1 2 1 2\n";
+    }
+    else{
+        for(int i = n; i >= 1; i--){
+            cout << i << " ";
+        }
+        cout << n << " ";
+        for(int i = 1; i < n; i++){
+            cout << i << " ";
+        }
+        cout <<  "\n";
+    }
 }
 
 int main() {

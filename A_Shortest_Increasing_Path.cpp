@@ -65,25 +65,16 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n; cin >> n; 
-    vi v(n); each(x, v) cin >> x;
-    int pairs = 0;
-    // int mainam();
-    unordered_set<string> st;
-    for(auto x : v){
-        string num = to_string(x);
-        for(int i = 0; i < sz(num); i++){
-            string temp = num;
-            for(char ch = '0'; ch <= '9'; ch++){
-                temp[i] = ch;
-                if(st.find(temp) != st.end() && temp != num){
-                    pairs++;
-                }
-            }
-        }
-        st.insert(num);
+    ll x, y; cin >> x >> y;
+    if(x < y){
+        cout << 2 << endl;
     }
-    cout << pairs / 2 << "\n";
+    else if(y == 1 || (x - y  <= 1)){
+        cout << -1 << endl;
+    }
+    else{
+        cout << 3 << endl;
+    }
 }
 
 int main() {

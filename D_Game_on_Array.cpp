@@ -65,25 +65,33 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
  */
 
 void solve() {
-    int n; cin >> n; 
-    vi v(n); each(x, v) cin >> x;
-    int pairs = 0;
-    // int mainam();
-    unordered_set<string> st;
-    for(auto x : v){
-        string num = to_string(x);
-        for(int i = 0; i < sz(num); i++){
-            string temp = num;
-            for(char ch = '0'; ch <= '9'; ch++){
-                temp[i] = ch;
-                if(st.find(temp) != st.end() && temp != num){
-                    pairs++;
-                }
-            }
-        }
-        st.insert(num);
+    ll n; cin >> n;
+    vll v(n); each(x, v) cin >> x;
+    ll a = 0, b = 0;
+    map<ll, ll> mp;
+    rep(i, 0, n){
+        mp[v[i]]++;
     }
-    cout << pairs / 2 << "\n";
+    vector<pll> freq;
+    each(x, mp){
+        freq.pb({x.F, x.S}); // {number, frequency}
+    }
+    vll temp;
+    for(auto x : freq){
+        ll number = x.F;
+        ll frequency = x.S;
+        a += frequency * (number / 2);
+        b += frequency * (number / 2);
+        if(number & 1){
+            temp.pb(frequency);
+        }
+    }
+    sort(rall(temp));
+    for(ll i = 0; i < sz(temp); i++){
+        if(i & 1) b += temp[i];
+        else a += temp[i];
+    }
+    cout << a << " " << b << "\n";
 }
 
 int main() {
