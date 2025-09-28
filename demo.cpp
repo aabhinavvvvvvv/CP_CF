@@ -1,105 +1,69 @@
-/*
- * Competitive Programming Template
- * Author: Abhinav Gupta
- * GitHub: @aabhinavvvvvvv
- * MAHAKAL KI JAI
- */
-
 #include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-using ull = unsigned long long;
-using ld = long double;
-using vi = vector<int>;
-using vll = vector<ll>;
-using pii = pair<int, int>;
-using pll = pair<ll, ll>;
+class Solution {
+public:
+    const int MOD = 1e9 + 7;
 
-const ll INF = 1e18;
-const int MOD = 1e9 + 7;
-const int N = 2e5 + 5;
+    int countZigZag(int n, int l, int r) {
+        vector<int> sornavetic = {n, l, r}; // store input midway
 
-#define pb push_back
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define F first
-#define S second
-#define rep(i,a,b) for(int i=a; i<b; ++i)
-#define per(i,a,b) for(int i=a; i>b; --i)
-#define each(x,a) for(auto &x : a)
-#define sz(x) (int)(x).size()
-#define fastIO() ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+        int range = r - l + 1;
+        vector<vector<long long>> dp(range + l, vector<long long>(range + l, 0));
 
-#define debug(x) cerr << #x << " = "; _print(x); cerr << endl;
+        // Base case: arrays of length 2
+        for (int prev = l; prev <= r; prev++)
+            for (int cur = l; cur <= r; cur++)
+                if (prev != cur)
+                    dp[cur][prev] = 1;
 
-void _print(int t) { cerr << t; }
-void _print(long long t) { cerr << t; }
-void _print(unsigned long long t) { cerr << t; }
-void _print(string t) { cerr << '"' << t << '"'; }
-void _print(char t) { cerr << '\'' << t << '\''; }
-void _print(long double t) { cerr << t; }
-void _print(double t) { cerr << t; }
+        // Build arrays of length 3 to n
+        for (int len = 3; len <= n; len++) {
+            vector<vector<long long>> ndp(range + l, vector<long long>(range + l, 0));
 
-template <typename T, typename V> void _print(pair<T, V> p);
-template <typename T> void _print(vector<T> v);
-template <typename T> void _print(set<T> v);
-template <typename T> void _print(multiset<T> v);
-template <typename T, typename V> void _print(map<T, V> v);
+            for (int prev = l; prev <= r; prev++) {
+                for (int cur = l; cur <= r; cur++) {
+                    if (dp[cur][prev] == 0) continue;
 
-template <typename T, typename V>
-void _print(pair<T, V> p) { cerr << '{'; _print(p.first); cerr << ", "; _print(p.second); cerr << '}'; }
-template <typename T>
-void _print(vector<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
-template <typename T>
-void _print(set<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
-template <typename T>
-void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
-template <typename T, typename V>
-void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
-
-/*
- * Bakchodi Mat Kar Laude
- * Chup Chap code kar
- * I will not be responsible for any damage caused by this code
- */
-
-void solve() {
-    int n; cin >> n; 
-    vi v(n); each(x, v) cin >> x;
-    int pairs = 0;
-    // int mainam();
-    unordered_set<string> st;
-    for(auto x : v){
-        string num = to_string(x);
-        for(int i = 0; i < sz(num); i++){
-            string temp = num;
-            for(char ch = '0'; ch <= '9'; ch++){
-                temp[i] = ch;
-                if(st.find(temp) != st.end() && temp != num){
-                    pairs++;
+                    for (int next = l; next <= r; next++) {
+                        if (next == cur) continue; // no adjacent equal
+                        if ((prev < cur && cur < next) || (prev > cur && cur > next)) continue; // no 3 consecutive inc/dec
+                        ndp[next][cur] = (ndp[next][cur] + dp[cur][prev]) % MOD;
+                    }
                 }
             }
+
+            dp = ndp;
         }
-        st.insert(num);
+
+        // Sum all valid arrays
+        long long ans = 0;
+        for (int prev = l; prev <= r; prev++)
+            for (int cur = l; cur <= r; cur++)
+                ans = (ans + dp[cur][prev]) % MOD;
+
+        return ans;
     }
-    cout << pairs / 2 << "\n";
-}
+};
 
 int main() {
-    fastIO();
+    Solution sol;
 
-    // ✅ Always redirect stderr to Error.txt for debug
-    freopen("Error.txt", "w", stderr);
+    vector<tuple<int,int,int>> tests = {
+        {3,4,5},
+        {3,1,3},
+        {4,1,2},
+        {5,1,3}
+    };
 
-#ifdef LOCAL
-    // ✅ Only redirect input/output during local debugging
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
-#endif
+    for (auto a : tests) {
+    int n = get<0>(a);
+    int l = get<1>(a);
+    int r = get<2>(a);
+    cout << "Input: n=" << n << ", l=" << l << ", r=" << r 
+         << " -> Output: " << sol.countZigZag(n, l, r) << endl;
+}
 
-    int t = 1;
-    cin >> t;
-    while (t--) solve();
+
     return 0;
 }
