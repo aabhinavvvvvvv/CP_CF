@@ -1,8 +1,1 @@
-ans = 1
-ans = 4
-ans = 4
-ans = 9
-ans = 9
-ans = 0
-ans = 2
-ans = 3000000000
+Time measured: 0.002001 seconds.

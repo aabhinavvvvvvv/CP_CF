@@ -1,69 +1,175 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
+struct Rule {
+    string left;
+    vector<string> right;
+};
+
+class CFG {
+    vector<Rule> rules;
+    set<string> variables, terminals;
+
 public:
-    const int MOD = 1e9 + 7;
+    void addRule(const string &left, const vector<string> &right) {
+        rules.push_back({left, right});
+        variables.insert(left);
+        for (const string &symbol : right) {
+            if (islower(symbol[0])) terminals.insert(symbol);
+            else variables.insert(symbol);
+        }
+    }
 
-    int countZigZag(int n, int l, int r) {
-        vector<int> sornavetic = {n, l, r}; // store input midway
+    // Step 1: Replace terminals in RHS of length > 1
+    void replaceTerminals() {
+        map<string, string> termMap;
+        int tCount = 1;
+        vector<Rule> updated;
+        for (auto &r : rules) {
+            vector<string> newRHS;
+            for (auto &sym : r.right) {
+                if (terminals.count(sym) && r.right.size() > 1) {
+                    if (!termMap.count(sym)) {
+                        string newVar = "T" + to_string(tCount++);
+                        termMap[sym] = newVar;
+                        updated.push_back({newVar, {sym}});
+                    }
+                    newRHS.push_back(termMap[sym]);
+                } else {
+                    newRHS.push_back(sym);
+                }
+            }
+            updated.push_back({r.left, newRHS});
+        }
+        rules = updated;
+    }
 
-        int range = r - l + 1;
-        vector<vector<long long>> dp(range + l, vector<long long>(range + l, 0));
+    // Step 2: Binarize rules (RHS length > 2)
+    void binarize() {
+        vector<Rule> updated;
+        int xCount = 1;
+        for (auto &r : rules) {
+            if (r.right.size() <= 2) {
+                updated.push_back(r);
+            } else {
+                string prev = r.right[0];
+                for (size_t i = 1; i < r.right.size() - 1; i++) {
+                    string newVar = "X" + to_string(xCount++);
+                    updated.push_back({newVar, {prev, r.right[i]}});
+                    prev = newVar;
+                }
+                updated.push_back({r.left, {prev, r.right.back()}});
+            }
+        }
+        rules = updated;
+    }
 
-        // Base case: arrays of length 2
-        for (int prev = l; prev <= r; prev++)
-            for (int cur = l; cur <= r; cur++)
-                if (prev != cur)
-                    dp[cur][prev] = 1;
-
-        // Build arrays of length 3 to n
-        for (int len = 3; len <= n; len++) {
-            vector<vector<long long>> ndp(range + l, vector<long long>(range + l, 0));
-
-            for (int prev = l; prev <= r; prev++) {
-                for (int cur = l; cur <= r; cur++) {
-                    if (dp[cur][prev] == 0) continue;
-
-                    for (int next = l; next <= r; next++) {
-                        if (next == cur) continue; // no adjacent equal
-                        if ((prev < cur && cur < next) || (prev > cur && cur > next)) continue; // no 3 consecutive inc/dec
-                        ndp[next][cur] = (ndp[next][cur] + dp[cur][prev]) % MOD;
+    // Step 3: Remove epsilon-productions
+    void removeEpsilon() {
+        set<string> nullable;
+        // Find nullable variables (A -> ε)
+        bool changed = true;
+        while (changed) {
+            changed = false;
+            for (auto &r : rules) {
+                if (r.right.empty() || all_of(r.right.begin(), r.right.end(),
+                        [&](string s){ return nullable.count(s); })) {
+                    if (!nullable.count(r.left)) {
+                        nullable.insert(r.left);
+                        changed = true;
                     }
                 }
             }
-
-            dp = ndp;
         }
+        // Generate new rules by removing nullable variables in RHS
+        vector<Rule> newRules;
+        for (auto &r : rules) {
+            vector<vector<string>> rhsOptions = {{}};
+            for (auto &sym : r.right) {
+                vector<vector<string>> tmp;
+                for (auto &opt : rhsOptions) {
+                    vector<string> opt1 = opt;
+                    opt1.push_back(sym);
+                    tmp.push_back(opt1);
+                    if (nullable.count(sym)) {
+                        tmp.push_back(opt); // omit nullable symbol
+                    }
+                }
+                rhsOptions = tmp;
+            }
+            for (auto &opt : rhsOptions) {
+                if (!opt.empty() || r.left == "S") { // keep empty only for start
+                    newRules.push_back({r.left, opt});
+                }
+            }
+        }
+        rules = newRules;
+    }
 
-        // Sum all valid arrays
-        long long ans = 0;
-        for (int prev = l; prev <= r; prev++)
-            for (int cur = l; cur <= r; cur++)
-                ans = (ans + dp[cur][prev]) % MOD;
+    // Step 4: Remove unit productions (A -> B)
+    void removeUnitProductions() {
+        vector<Rule> newRules;
+        map<string, set<vector<string>>> prodMap;
+        for (auto &r : rules) prodMap[r.left].insert(r.right);
 
-        return ans;
+        for (auto &var : variables) {
+            set<vector<string>> closure;
+            queue<string> q;
+            q.push(var);
+            while (!q.empty()) {
+                string u = q.front(); q.pop();
+                for (auto &rhs : prodMap[u]) {
+                    if (rhs.size() == 1 && variables.count(rhs[0])) {
+                        if (!closure.count({rhs[0]})) {
+                            closure.insert({rhs[0]});
+                            q.push(rhs[0]);
+                        }
+                    } else {
+                        closure.insert(rhs);
+                    }
+                }
+            }
+            for (auto &rhs : closure) {
+                newRules.push_back({var, rhs});
+            }
+        }
+        rules = newRules;
+    }
+
+    void convertToCNF() {
+        replaceTerminals();
+        binarize();
+        removeEpsilon();
+        removeUnitProductions();
+    }
+
+    void printGrammar() {
+        for (auto &r : rules) {
+            
+            cout << r.left << " -> ";
+            if (r.right.empty()) cout << "ε";
+            else for (auto &s : r.right) cout << s << " ";
+            cout << "\n";
+        }
     }
 };
 
 int main() {
-    Solution sol;
+    CFG g;
 
-    vector<tuple<int,int,int>> tests = {
-        {3,4,5},
-        {3,1,3},
-        {4,1,2},
-        {5,1,3}
-    };
+    g.addRule("S", {"A", "B", "C"});
+    g.addRule("A", {"a"});
+    g.addRule("B", {"b"});
+    g.addRule("C", {"c", "D"});
+    g.addRule("D", {"d"});
 
-    for (auto a : tests) {
-    int n = get<0>(a);
-    int l = get<1>(a);
-    int r = get<2>(a);
-    cout << "Input: n=" << n << ", l=" << l << ", r=" << r 
-         << " -> Output: " << sol.countZigZag(n, l, r) << endl;
-}
+    cout << "Input CFG:\n";
+    g.printGrammar();
 
+    g.convertToCNF();
+
+    cout << "\nCNF Grammar:\n";
+    g.printGrammar();
 
     return 0;
 }
