@@ -59,20 +59,24 @@ template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
 void solve() {
-    string s; cin >> s;
-    for (int i = 1; i < s.length() - 1; ++i) {
-        for (int j = i + 1; j < s.length(); ++j) {
-            string a = s.substr(0, i);
-            string b = s.substr(i, j - i);
-            string c = s.substr(j);
- 
-            if ((a <= b && c <= b) || (b <= a && b <= c)) {
-                cout << a << " " << b << " " << c << endl;
-                return;
-            }
+    int n; cin >> n;
+    vi a(n), b(n + 1);
+    each(x, a) cin >> x;
+    each(x, b) cin >> x;
+    int ans = INT_MAX;
+    for(int i = 0; i < n; i++){
+        ans = min(ans, abs(a[i] - b[n]));
+        ans = min(ans, abs(b[i] - b[n]));
+        int mini = min(a[i], b[i]);
+        int maxi = max(a[i], b[i]);
+        if(b[n] <= maxi && b[n] >= mini){
+            ans = 0;
         }
     }
-    cout << ":(" << endl;
+    for(int i = 0; i < n; i++){
+        ans += abs(a[i] - b[i]);
+    }
+    cout << ans + 1 << endl;
 }
 
 int main() {
