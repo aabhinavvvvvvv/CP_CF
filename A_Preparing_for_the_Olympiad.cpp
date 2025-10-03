@@ -59,12 +59,15 @@ template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
 void solve() {
-    int a, b; cin >> a >> b;
-    rep(i, 0, 30){
-        if(((1 << i) & a) != ((1 << i) & b)){
-            cout << (1 << i) << endl; return;
-        }
+    int n; cin >> n;
+    vi a(n), b(n);
+    each(x, a) cin >> x;
+    each(x, b) cin >> x;
+    int ans = a[n - 1];
+    rep(i, 0, n - 1){
+        ans += max(0, a[i] - b[i + 1]);
     }
+    cout << ans << endl;
 }
 
 int main() {
