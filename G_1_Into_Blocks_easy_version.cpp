@@ -58,20 +58,39 @@ void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " ";
 template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
-vll a(N), b(N), c(N);
-vll f(N, 0);
 void solve() {
-    ll n; cin >> n;
-    rep(i, 1, n + 1) cin >> a[i];
-    rep(i, 1, n + 1) cin >> b[i];
-    rep(i, 1, n + 1) cin >> c[i];
-    ll ans = 0;
-    rep(i, 1, n + 1){
-        f[b[c[i]]]++;
+    int n, q; 
+    cin >> n >> q;
+    vector<int> v(n);
+    for(auto &x : v) cin >> x;
+    map<int, vector<int>> mp;
+    for(int i = 0; i < n; i++){
+        mp[v[i]].push_back(i);
     }
-    rep(i, 1, n + 1){
-        ans += f[a[i]];
+    vector<vector<int>> range;
+    for(auto &x : mp){
+        range.push_back({x.second[0], x.second.back(), x.second.size()});
     }
+    sort(all(range));
+    int ans = 0;
+    int st = range[0][0], end = range[0][1];
+    int maxi = range[0][2];
+
+    for(int i = 1; i < (int)range.size(); i++){
+        auto &x = range[i];
+        if(x[0] > end){
+            ans += (end - st + 1) - maxi;
+            st = x[0];
+            end = x[1];
+            maxi = x[2];
+        }
+        else{
+            end = max(end, x[1]);
+            maxi = max(maxi, x[2]);
+        }
+    }
+    ans += (end - st + 1) - maxi;
+
     cout << ans << endl;
 }
 

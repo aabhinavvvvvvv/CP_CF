@@ -58,21 +58,9 @@ void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " ";
 template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
-vll a(N), b(N), c(N);
-vll f(N, 0);
 void solve() {
-    ll n; cin >> n;
-    rep(i, 1, n + 1) cin >> a[i];
-    rep(i, 1, n + 1) cin >> b[i];
-    rep(i, 1, n + 1) cin >> c[i];
-    ll ans = 0;
-    rep(i, 1, n + 1){
-        f[b[c[i]]]++;
-    }
-    rep(i, 1, n + 1){
-        ans += f[a[i]];
-    }
-    cout << ans << endl;
+    int n; cin >> n;
+    cout << 2 * n - 2 << endl;
 }
 
 int main() {
@@ -86,7 +74,7 @@ int main() {
     auto begin = chrono::high_resolution_clock::now();
 
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--) solve();
 
     auto end = chrono::high_resolution_clock::now();

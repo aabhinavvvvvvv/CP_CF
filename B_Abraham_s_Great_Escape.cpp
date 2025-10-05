@@ -58,21 +58,56 @@ void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " ";
 template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
-vll a(N), b(N), c(N);
-vll f(N, 0);
 void solve() {
-    ll n; cin >> n;
-    rep(i, 1, n + 1) cin >> a[i];
-    rep(i, 1, n + 1) cin >> b[i];
-    rep(i, 1, n + 1) cin >> c[i];
-    ll ans = 0;
-    rep(i, 1, n + 1){
-        f[b[c[i]]]++;
+    int n, k;
+    cin >> n >> k;
+    int total = n * n;
+
+    if (k == total - 1) {
+        cout << "NO\n";
+        return;
     }
-    rep(i, 1, n + 1){
-        ans += f[a[i]];
+    int trap = total - k;
+    cout << "YES\n";
+    vector<string> grid(n, string(n, 'U'));
+    if (trap == 0) {
+        for (int i = 0; i < n; ++i)
+            cout << grid[i] << "\n";
+        return;
     }
-    cout << ans << endl;
+
+    vector<pair<int, int>> tc;
+    for (int i = n - 1; i >= 0 && tc.size() < trap; i--) {
+        for (int j = n - 1; j >= 0 && tc.size() < trap; j--) {
+            tc.pb({i, j});
+        }
+    }
+
+    if (trap >= 2) {
+        auto p1 = tc[0];
+        auto p2 = tc[1];
+        if (p1.first == p2.first) { 
+            grid[p1.first][p1.second] = 'L';
+            grid[p2.first][p2.second] = 'R';
+        } else { 
+            grid[p1.first][p1.second] = 'U';
+            grid[p2.first][p2.second] = 'D';
+        }
+    }
+
+    for (int i = 2; i < tc.size(); ++i) {
+        auto curr = tc[i];
+        auto next = tc[i - 1];
+        if (curr.first == next.first) {
+            grid[curr.first][curr.second] = (curr.second < next.second) ? 'R' : 'L';
+        } else { 
+            grid[curr.first][curr.second] = (curr.first < next.first) ? 'D' : 'U';
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        cout << grid[i] << "\n";
+    }
 }
 
 int main() {
@@ -83,15 +118,9 @@ int main() {
     freopen("output.txt", "w", stdout);
 #endif
 
-    auto begin = chrono::high_resolution_clock::now();
-
-    int t = 1;
-    // cin >> t;
+    int t;
+    cin >> t;
     while (t--) solve();
-
-    auto end = chrono::high_resolution_clock::now();
-    auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
-    cerr << "Time measured: " << elapsed.count() * 1e-9 << " seconds." << endl;
 
     return 0;
 }

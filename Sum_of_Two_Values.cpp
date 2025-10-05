@@ -58,21 +58,20 @@ void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " ";
 template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
-vll a(N), b(N), c(N);
-vll f(N, 0);
 void solve() {
-    ll n; cin >> n;
-    rep(i, 1, n + 1) cin >> a[i];
-    rep(i, 1, n + 1) cin >> b[i];
-    rep(i, 1, n + 1) cin >> c[i];
-    ll ans = 0;
-    rep(i, 1, n + 1){
-        f[b[c[i]]]++;
+    int n, target; cin >> n >> target;
+    vll v(n);
+    rep(i, 0, n) cin >> v[i];
+    map<int, int> mp;
+    for(int i = 0; i < n; i++){
+        int search = target - v[i] ;
+        if(mp.find(search) != mp.end()){
+            cout << mp[search] + 1 << " " << i + 1 << endl;
+            return;
+        }
+        mp[v[i]] = i;
     }
-    rep(i, 1, n + 1){
-        ans += f[a[i]];
-    }
-    cout << ans << endl;
+    cout << "IMPOSSIBLE\n";
 }
 
 int main() {

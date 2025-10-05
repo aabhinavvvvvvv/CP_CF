@@ -25,9 +25,9 @@ const int N = 2e5 + 5;
 #define rall(x) (x).rbegin(), (x).rend()
 #define F first
 #define S second
-#define rep(i,a,b) for(int i=a; i<b; ++i)
-#define per(i,a,b) for(int i=a; i>b; --i)
-#define each(x,a) for(auto &x : a)
+#define rep(i,jury,b) for(int i=jury; i<b; ++i)
+#define per(i,jury,b) for(int i=jury; i>b; --i)
+#define each(x,jury) for(auto &x : jury)
 #define sz(x) (int)(x).size()
 #define fastIO() ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
@@ -58,22 +58,37 @@ void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " ";
 template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
-vll a(N), b(N), c(N);
-vll f(N, 0);
 void solve() {
-    ll n; cin >> n;
-    rep(i, 1, n + 1) cin >> a[i];
-    rep(i, 1, n + 1) cin >> b[i];
-    rep(i, 1, n + 1) cin >> c[i];
-    ll ans = 0;
-    rep(i, 1, n + 1){
-        f[b[c[i]]]++;
+    int k, n;
+    cin >> k >> n;
+    vector<ll> jury(k);
+    for (int i = 0; i < k; ++i) cin >> jury[i];
+    vector<ll> b(n);
+    for (int i = 0; i < n; ++i) cin >> b[i];
+
+    vector<ll> pref(k);
+    pref[0] = jury[0];
+    for (int i = 1; i < k; ++i) {
+        pref[i] = pref[i - 1] + jury[i];
     }
-    rep(i, 1, n + 1){
-        ans += f[a[i]];
+    unordered_set<ll> prefst;
+    for (auto x : pref) prefst.insert(x);
+
+    unordered_set<ll> valid;
+    ll base = b[0];
+    for (int i = 0; i < k; ++i) {
+        ll S = base - pref[i];
+        bool ok = true;
+        for (int j = 0; j < n; ++j) {
+            ll find = b[j] - S;
+            if (prefst.find(find) == prefst.end()) { ok = false; break; }
+        }
+        if (ok) valid.insert(S);
     }
-    cout << ans << endl;
+
+    cout << (int)valid.size() << '\n';
 }
+
 
 int main() {
     fastIO();
