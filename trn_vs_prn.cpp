@@ -76,7 +76,6 @@ void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "
 
 vector<double> times;
 
-
 int lastbit(int n){
     int sum = 0;
     while(n > 0){
