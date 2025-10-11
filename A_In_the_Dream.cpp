@@ -81,7 +81,7 @@ int main() {
     auto begin = chrono::high_resolution_clock::now();
 
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--) solve();
 
     auto end = chrono::high_resolution_clock::now();
