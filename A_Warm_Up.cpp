@@ -48,10 +48,10 @@ void solve() {
         break;
     }
 
+
     for(int t : sortedTargets) {
         vector<int> &indices = targetPos[t];
 
-        // find current source
         int src = -1;
         if(sourceIdx.count(t)) src = sourceIdx[t];
         else {
