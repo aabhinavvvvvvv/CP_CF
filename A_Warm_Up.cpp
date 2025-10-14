@@ -1,79 +1,65 @@
+/*
+ * Competitive Programming Template
+ * Author: Abhinav Gupta
+ * GitHub: @aabhinavvvvvvv
+ * MAHAKAL KI JAI
+ */
+
 #include <bits/stdc++.h>
 using namespace std;
 
 using ll = long long;
+using ull = unsigned long long;
+using ld = long double;
 using vi = vector<int>;
-using pii = pair<int,int>;
-using state = tuple<int,int,int>;
+using vll = vector<ll>;
+using pii = pair<int, int>;
+using pll = pair<ll, ll>;
 
-#define fastIO() ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+const ll INF = 1e18;
+const int MOD = 1e9 + 7;
+const int N = 2e5 + 5;
+
+#define pb push_back
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define F first
+#define S second
 #define rep(i,a,b) for(int i=a; i<b; ++i)
+#define per(i,a,b) for(int i=a; i>b; --i)
+#define each(x,a) for(auto &x : a)
+#define sz(x) (int)(x).size()
+#define fastIO() ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+
+#define debug(x) cerr << #x << " = "; _print(x); cerr << endl;
+
+void _print(int t) { cerr << t; }
+void _print(long long t) { cerr << t; }
+void _print(unsigned long long t) { cerr << t; }
+void _print(string t) { cerr << '"' << t << '"'; }
+void _print(char t) { cerr << '\'' << t << '\''; }
+void _print(long double t) { cerr << t; }
+void _print(double t) { cerr << t; }
+
+template <typename T, typename V> void _print(pair<T, V> p);
+template <typename T> void _print(vector<T> v);
+template <typename T> void _print(set<T> v);
+template <typename T> void _print(multiset<T> v);
+template <typename T, typename V> void _print(map<T, V> v);
+
+template <typename T, typename V>
+void _print(pair<T, V> p) { cerr << '{'; _print(p.first); cerr << ", "; _print(p.second); cerr << '}'; }
+template <typename T>
+void _print(vector<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
+template <typename T>
+void _print(set<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
+template <typename T>
+void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
+template <typename T, typename V>
+void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
 void solve() {
-    int n; cin >> n;
-    vi curr(n), req(n);
-    rep(i,0,n) cin >> curr[i];
-    rep(i,0,n) cin >> req[i];
-
-    // Step 1: Check impossible cases
-    int maxB = *max_element(req.begin(), req.end());
-    bool hasSource = false;
-    rep(i,0,n) if(curr[i] == maxB) hasSource = true;
-    rep(i,0,n) if(curr[i] > req[i]) {
-        cout << "-1\n"; // Can't cool dishes
-        return;
-    }
-    if(!hasSource) {
-        cout << "-1\n"; // No dish can serve as source for maxB
-        return;
-    }
-
-    // Step 2: Collect dishes by target temperatures
-    map<int, vector<int>> targetPos;
-    rep(i,0,n) targetPos[req[i]].push_back(i);
-
-    vector<pii> ops; // store operations (i,j)
-
-    // Step 3: Process targets descending (so we always have a source)
-    vector<int> sortedTargets;
-    for(auto &[t,v] : targetPos) sortedTargets.push_back(t);
-    sort(sortedTargets.rbegin(), sortedTargets.rend()); // descending
-
-    // Track source indices for each target
-    map<int,int> sourceIdx;
-
-    // Initialize source for max target
-    for(int i=0;i<n;i++) if(curr[i] == maxB) {
-        sourceIdx[maxB] = i;
-        break;
-    }
-
-
-    for(int t : sortedTargets) {
-        vector<int> &indices = targetPos[t];
-
-        int src = -1;
-        if(sourceIdx.count(t)) src = sourceIdx[t];
-        else {
-            // find any dish already at t
-            for(int idx : indices) if(curr[idx] == t) { src = idx; break; }
-            if(src == -1) {
-                cout << "-1\n"; // impossible, no source
-                return;
-            }
-            sourceIdx[t] = src;
-        }
-
-        for(int idx : indices) {
-            if(curr[idx] == t) continue;
-            ops.push_back({idx+1, src+1}); // 1-based index
-            curr[idx] = t; // update
-        }
-    }
-
-    // Step 4: Output operations
-    cout << ops.size() << '\n';
-    for(auto [i,j] : ops) cout << i << ' ' << j << '\n';
+    
 }
 
 int main() {
@@ -84,11 +70,15 @@ int main() {
     freopen("output.txt", "w", stdout);
 #endif
 
-    int t; cin >> t;
-    rep(tc,1,t+1) {
-        cout << "Case #" << tc << ": ";
-        solve();
-    }
+    auto begin = chrono::high_resolution_clock::now();
+
+    int t = 1;
+    cin >> t;
+    while (t--) solve();
+
+    auto end = chrono::high_resolution_clock::now();
+    auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
+    cerr << "Time measured: " << elapsed.count() * 1e-9 << " seconds." << endl;
 
     return 0;
 }
