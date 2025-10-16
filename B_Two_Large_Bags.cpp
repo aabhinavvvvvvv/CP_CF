@@ -58,59 +58,41 @@ void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " ";
 template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
-/*
- * Bakchodi Mat Kar Laude
- * Chup Chap code kar
- * I will not be responsible for any damage caused by this code
- */
-
 void solve() {
-    int n, m;
-    cin >> n >> m;
-    string s;
-    cin >> s;
-
-    set<int> black;
-    rep(i, 0, m) {
-        int c;
-        cin >> c;
-        black.insert(c);
+    int n; cin >> n; 
+    vi v(n), f(3 * n, 0);
+    rep(i, 0, n){
+        cin >> v[i];
+        f[v[i]]++;
     }
-
-    int last = 1;
-    for (char x : s) {
-        if (x == 'A') {
-            last++;
-            black.insert(last);
-        } else {
-            last++;
-            while (black.count(last)) last++;
-            black.insert(last);
-            last++;
-            while (black.count(last)) last++;
+    rep(i, 0, 3 * n){
+        if(f[i] == 0) continue;
+        if(f[i] == 1){
+            cout << "NO\n";
+            return;
         }
+        f[i + 1] += f[i] - 2;
     }
-
-    cout << black.size() << "\n";
-    for (int x : black) cout << x << " ";
-    cout << "\n";
+    cout << "YES\n";
 }
-
 
 int main() {
     fastIO();
-
-    // ✅ Always redirect stderr to Error.txt for debug
-    freopen("Error.txt", "w", stderr);
-
 #ifdef LOCAL
-    // ✅ Only redirect input/output during local debugging
+    freopen("Error.txt", "w", stderr);
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 #endif
 
+    auto begin = chrono::high_resolution_clock::now();
+
     int t = 1;
     cin >> t;
     while (t--) solve();
+
+    auto end = chrono::high_resolution_clock::now();
+    auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
+    cerr << "Time measured: " << elapsed.count() * 1e-9 << " seconds." << endl;
+
     return 0;
 }

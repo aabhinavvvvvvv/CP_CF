@@ -1,185 +1,112 @@
-/*
- * Competitive Programming Template
- * Author: Abhinav Gupta
- * GitHub: @aabhinavvvvvvv
- * MAHAKAL KI JAI
- */
-
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+// #pragma GCC optimize("Ofast")
+// #pragma GCC optimize("unroll-loops")
+
 using namespace std;
+using namespace __gnu_pbds;
 
-using ll = long long;
-using ull = unsigned long long;
-using ld = long double;
-using vi = vector<int>;
-using vll = vector<ll>;
-using pii = pair<int, int>;
-using pll = pair<ll, ll>;
+#define ll long long
+#define f(i, n) for (ll i = 0; i < n; i++)
+#define ia(a, n) \
+    ll a[n];     \
+    f(i, n) cin >> a[i]
+#define iv(v, n)     \
+    vector<ll> v(n); \
+    f(i, n) cin >> v[i]
+#define MOD (1000000007)
+#define INF 1000000000000000000LL // Infinity for ll
+#define mp make_pair
+#define nline '\n'
+#define yes cout << "YES\n"
+#define no cout << "NO\n"
 
-const ll INF = 1e18;
-const int MOD = 1e9 + 7;
-const int N = 2e5 + 5;
-
-#define pb push_back
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define F first
-#define S second
-#define rep(i, a, b) for (int i = a; i < b; ++i)
-#define per(i, a, b) for (int i = a; i > b; --i)
-#define each(x, a) for (auto &x : a)
-#define sz(x) (int)(x).size()
-#define fastIO()                 \
-    ios::sync_with_stdio(false); \
-    cin.tie(nullptr);            \
-    cout.tie(nullptr);
-
-#define debug(x)         \
-    cerr << #x << " = "; \
-    _print(x);           \
-    cerr << endl;
-
-void _print(int t) { cerr << t; }
-void _print(long long t) { cerr << t; }
-void _print(unsigned long long t) { cerr << t; }
-void _print(string t) { cerr << '"' << t << '"'; }
-void _print(char t) { cerr << '\'' << t << '\''; }
-void _print(long double t) { cerr << t; }
-void _print(double t) { cerr << t; }
-
-template <typename T, typename V>
-void _print(pair<T, V> p);
 template <typename T>
-void _print(vector<T> v);
-template <typename T>
-void _print(set<T> v);
-template <typename T>
-void _print(multiset<T> v);
-template <typename T, typename V>
-void _print(map<T, V> v);
+using os = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
-template <typename T, typename V>
-void _print(pair<T, V> p)
-{
-    cerr << '{';
-    _print(p.first);
-    cerr << ", ";
-    _print(p.second);
-    cerr << '}';
-}
 template <typename T>
-void _print(vector<T> v)
-{
-    cerr << "[ ";
-    for (T i : v)
-        _print(i), cerr << " ";
-    cerr << "]";
-}
-template <typename T>
-void _print(set<T> v)
-{
-    cerr << "[ ";
-    for (T i : v)
-        _print(i), cerr << " ";
-    cerr << "]";
-}
-template <typename T>
-void _print(multiset<T> v)
-{
-    cerr << "[ ";
-    for (T i : v)
-        _print(i), cerr << " ";
-    cerr << "]";
-}
-template <typename T, typename V>
-void _print(map<T, V> v)
-{
-    cerr << "[ ";
-    for (auto i : v)
-        _print(i), cerr << " ";
-    cerr << "]";
-}
+using oms = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+// read question properly
+// don't forget newlines!!!!!!
+// take care about cin >> t;
+// comment the optimization before debugging
+// ALWAYS USE FIXED << SETPRECISION WHILE OUTPUTTING FLOATS
+
 void solve()
 {
-    int n;
+    //at least 2 should be equal in the array
+    //take all the pairs, then find two nums
+    //such that a - b < sum of all pairs, and a + b is maximised
+    //(b can be zero as well)
+    ll n;
     cin >> n;
-    map<ll, int> freq;
-    for (int i = 0; i < n; ++i)
-    {
-        ll x;
-        cin >> x;
-        freq[x]++;
+    ia(a,n);
+    ll ans = 0;
+    map<ll,ll> fr;
+    f(i,n) {
+        fr[a[i]]++;
+    }
+    vector<ll> v;
+    ll cnt = 0;
+    for(auto x : fr) {
+        if(x.second & 1)
+        v.push_back(x.first);
+        ans += (x.second / 2) * 2 * x.first;
+        cnt += x.second / 2 * 2;
     }
 
-    vll pairs, singles;
-    for (auto x : freq)
-    {
-        ll len = x.first;
-        ll cnt = x.second;
-
-        for (int i = 0; i < cnt / 2; ++i)
-        {
-            pairs.pb(len);
-        }
-        if (cnt % 2 == 1)
-        {
-            singles.pb(len);
-        }
+    if(ans == 0) {
+        cout << 0 << nline;
+        return;
     }
 
-    sort(all(pairs));
-    sort(all(singles));
+    sort(v.begin(), v.end());
 
-    vector<ll> pref(sz(pairs) + 1, 0);
-    for (size_t i = 0; i < sz(pairs); ++i)
-        pref[i + 1] = pref[i] + 2 * pairs[i];
+    ll finans = 0;
 
-    vector<ll> uniq;
-    for (auto p : freq)
-        uniq.push_back(p.first);
-    sort(rall(uniq));
-    for (auto x : uniq)
-    {
-        int pairsss = upper_bound(pairs.begin(), pairs.end(), x) - pairs.begin();
-        int singlesss = upper_bound(singles.begin(), singles.end(), x) - singles.begin();
-
-        int used = min(2, singlesss);
-        int tot = 2 * pairsss + used;
-        if (tot < 3)
-            continue;
-
-        ll perimeter = pref[pairsss];
-        for (int i = 0; i < used; ++i)
-            perimeter += singles[singlesss - 1 - i];
-        if (perimeter > 2 * x)
-        {
-            cout << perimeter << '\n';
-            return;
+    f(i,v.size()) {
+        if(v[i] < ans) {
+            finans = max(finans, ans + v[i]);
         }
     }
 
-    cout << 0 << '\n';
+    for(int i = 1; i < v.size(); i++) {
+        if(v[i] - v[i-1] < ans) {
+            finans = max(finans, ans + v[i] + v[i-1]);
+        }
+    }
+
+    if(cnt >= 4) {
+        finans = max(finans, ans);
+    }
+
+    cout << finans << nline;
 }
 
 int main()
 {
-    fastIO();
-    freopen("Error.txt", "w", stderr);
-#ifdef LOCAL
+#ifdef PRADY
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
+    clock_t T = clock();
 #endif
 
-    auto begin = chrono::high_resolution_clock::now();
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
 
-    int t = 1;
+    long long t = 1;
     cin >> t;
+
     while (t--)
+    {
         solve();
+    }
 
-    auto end = chrono::high_resolution_clock::now();
-    auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
-    cerr << "Time measured: " << elapsed.count() * 1e-9 << " seconds." << endl;
-
+#ifdef PRADY
+    cout << "\nTime taken: " << ((float)(clock() - T)) / CLOCKS_PER_SEC << " seconds";
+#endif
     return 0;
 }
