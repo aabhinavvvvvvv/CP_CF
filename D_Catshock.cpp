@@ -58,8 +58,88 @@ void _print(multiset<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " ";
 template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
+vi lvl;
+vi parent; 
+void dfs(int u, int p, vector<vi>& adj){
+    parent[u] = p;
+    for(auto x : adj[u]){
+        if(x != p){
+            lvl[x] = lvl[u] + 1;
+            dfs(x, u, adj);
+        }
+    }
+}
+
 void solve() {
+    int n; cin >> n;
+    vector<vi> adj(n);
+    // vi deg(n, 0);
+    for(int i = 0; i < n - 1; i++){
+        int u, v;
+        cin >> u >> v;
+        --u; --v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+        // deg[u]++;
+        // deg[v]++;
+    }
+
+    lvl.assign(n, 0);
+    parent.assign(n, -1);
+    dfs(n - 1, -1, adj); 
+
+    queue<int> q;
+    vi deg(n, 0);
     
+    for(int i = 0; i < n - 1; i++){ 
+        deg[i] = adj[i].size();
+        if(parent[i] != -1) {
+            deg[i]--; 
+        }
+        
+        if(deg[i] == 0){ 
+            q.push(i);
+        }
+    }
+
+    vector<pii> ans;
+    bool f = lvl[0] % 2;
+
+    while(!q.empty()){
+        int u = q.front();
+        q.pop();
+
+        if((lvl[u] % 2) == f){
+            ans.pb({1, -1});
+            f = !f;
+        }
+
+        ans.pb({2, u});
+
+        ans.pb({1, -1});
+        f = !f;
+
+        int p_u = parent[u];
+        if(p_u != -1 && p_u != n-1) {
+            deg[p_u]--;
+            if(deg[p_u] == 0){
+                q.push(p_u);
+            }
+        }
+    }
+
+    if (!ans.empty()) {
+        ans.pop_back();
+    }
+
+    cout << ans.size() << '\n';
+    for(auto [x, y] : ans){
+        if(y == -1){
+            cout << x << '\n';
+        } else {
+            cout << x << ' ' << (y + 1) << '\n';
+        }
+    }
 }
 
 int main() {
