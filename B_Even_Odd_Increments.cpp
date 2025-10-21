@@ -59,30 +59,41 @@ template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
 void solve() {
-    int n; char c; cin >> n >> c;
-    string s; cin >> s;
-    set<int> st;
-    for(int i = 0; i < n; i++){
-        if(s[i] == 'g'){
-            st.insert(i);
-        }
+    int n, q;
+    cin >> n >> q;
+    vll v(n);
+    ll sum = 0;
+    ll cnt_even = 0, cnt_odd = 0;
+
+    rep(i, 0, n) {
+        cin >> v[i];
+        sum += v[i];
+        if (v[i] % 2 == 0) cnt_even++;
+        else cnt_odd++;
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++){
-        int curr = 0;
-        if(s[i] == c){
-            auto it = st.lower_bound(i);
-            if(it == st.end()){
-                curr += *st.begin() + (n - i);  
-            }else{
-                curr += (*it - i);
+
+    while (q--) {
+        int type; ll x;
+        cin >> type >> x;
+
+        if (type == 0) {
+            sum += cnt_even * x;
+            if (x % 2 == 1) { 
+                cnt_odd += cnt_even;
+                cnt_even = 0;
+            }
+        } else { 
+            sum += cnt_odd * x;
+            if (x % 2 == 1) {
+                cnt_even += cnt_odd;
+                cnt_odd = 0;
             }
         }
-        ans = max(ans, curr);
-    }
-    cout << ans << endl;
 
+        cout << sum << "\n";
+    }
 }
+
 
 int main() {
     fastIO();

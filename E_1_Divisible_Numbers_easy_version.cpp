@@ -59,31 +59,48 @@ template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
 void solve() {
-    int n; char c; cin >> n >> c;
-    string s; cin >> s;
-    set<int> st;
-    for(int i = 0; i < n; i++){
-        if(s[i] == 'g'){
-            st.insert(i);
-        }
-    }
-    int ans = 0;
-    for(int i = 0; i < n; i++){
-        int curr = 0;
-        if(s[i] == c){
-            auto it = st.lower_bound(i);
-            if(it == st.end()){
-                curr += *st.begin() + (n - i);  
-            }else{
-                curr += (*it - i);
+    ll a, b, c, d;
+    cin >> a >> b >> c >> d;
+    vll divisors_a, divisors_b;
+    
+    for (ll i = 1; i * i <= a; i++) {
+        if (a % i == 0) {
+            divisors_a.pb(i);
+            if (i * i != a) {
+                divisors_a.pb(a / i);
             }
         }
-        ans = max(ans, curr);
     }
-    cout << ans << endl;
-
+    
+    for (ll i = 1; i * i <= b; i++) {
+        if (b % i == 0) {
+            divisors_b.pb(i);
+            if (i * i != b) {
+                divisors_b.pb(b / i);
+            }
+        }
+    }
+    
+    for (ll a1 : divisors_a) {
+        for (ll b1 : divisors_b) {
+            ll a2 = a / a1;
+            ll b2 = b / b1;
+            
+            ll x = a1 * b1;
+            ll y = a2 * b2;
+            
+            ll final_x = (a / x + 1) * x;
+            ll final_y = (b / y + 1) * y;
+            
+            if (final_x <= c && final_y <= d) {
+                cout << final_x << " " << final_y << "\n";
+                return;
+            }
+        }
+    }
+    
+    cout << "-1 -1\n";
 }
-
 int main() {
     fastIO();
 #ifdef LOCAL

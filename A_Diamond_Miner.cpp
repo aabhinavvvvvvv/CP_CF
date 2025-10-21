@@ -59,28 +59,24 @@ template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
 void solve() {
-    int n; char c; cin >> n >> c;
-    string s; cin >> s;
-    set<int> st;
-    for(int i = 0; i < n; i++){
-        if(s[i] == 'g'){
-            st.insert(i);
+    int n; cin >> n;
+    vll miner, mine;
+    rep(i,0,2 * n){
+        ll a, b; cin >> a >> b;
+        if(!a){
+            miner.pb(abs(b));
+        }
+        else{
+            mine.pb(abs(a));
         }
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++){
-        int curr = 0;
-        if(s[i] == c){
-            auto it = st.lower_bound(i);
-            if(it == st.end()){
-                curr += *st.begin() + (n - i);  
-            }else{
-                curr += (*it - i);
-            }
-        }
-        ans = max(ans, curr);
+    ld sum = 0;
+    sort(all(miner));
+    sort(all(mine));
+    rep(i, 0, sz(miner)){
+        sum += sqrt(miner[i] * miner[i] + mine[i] * mine[i]);
     }
-    cout << ans << endl;
+    cout << fixed << setprecision(15) << sum << endl;
 
 }
 

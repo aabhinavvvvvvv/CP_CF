@@ -59,29 +59,7 @@ template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
 void solve() {
-    int n; char c; cin >> n >> c;
-    string s; cin >> s;
-    set<int> st;
-    for(int i = 0; i < n; i++){
-        if(s[i] == 'g'){
-            st.insert(i);
-        }
-    }
-    int ans = 0;
-    for(int i = 0; i < n; i++){
-        int curr = 0;
-        if(s[i] == c){
-            auto it = st.lower_bound(i);
-            if(it == st.end()){
-                curr += *st.begin() + (n - i);  
-            }else{
-                curr += (*it - i);
-            }
-        }
-        ans = max(ans, curr);
-    }
-    cout << ans << endl;
-
+    
 }
 
 int main() {

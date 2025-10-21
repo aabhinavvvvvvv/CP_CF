@@ -59,28 +59,47 @@ template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
 void solve() {
-    int n; char c; cin >> n >> c;
-    string s; cin >> s;
-    set<int> st;
-    for(int i = 0; i < n; i++){
-        if(s[i] == 'g'){
-            st.insert(i);
+    int n; cin >> n;
+    vll v(n);
+    rep(i,0,n) cin >> v[i];
+    int curr = 0;
+    rep(i,0,n) {
+        int x = v[i];
+        while(x % 2 == 0) {
+            x /= 2;
+            curr++;
         }
     }
+    if(curr >= n){
+        cout << 0 << endl;
+        return;
+    }
+    int need = n - curr;
+    vi f;
+    rep(i, 1, n + 1){
+        int x = i;
+        int twos = 0;
+        while(x % 2 == 0){
+            x /= 2;
+            twos++;
+        }
+        f.pb(twos);
+    }
+    sort(rall(f));
     int ans = 0;
-    for(int i = 0; i < n; i++){
-        int curr = 0;
-        if(s[i] == c){
-            auto it = st.lower_bound(i);
-            if(it == st.end()){
-                curr += *st.begin() + (n - i);  
-            }else{
-                curr += (*it - i);
-            }
+    rep(i, 0, sz(f)){
+        if(f[i] == 0){
+            cout << -1 << endl;
+            return;
         }
-        ans = max(ans, curr);
+        need -= f[i];
+        ans++;
+        if(need <= 0){
+            cout << ans << endl;
+            return;
+        }
     }
-    cout << ans << endl;
+    cout << -1 << endl;
 
 }
 

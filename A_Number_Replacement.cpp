@@ -59,29 +59,21 @@ template <typename T, typename V>
 void _print(map<T, V> v) { cerr << "[ "; for (auto i : v) _print(i), cerr << " "; cerr << "]"; }
 
 void solve() {
-    int n; char c; cin >> n >> c;
+    int n; cin >> n;
+    vi v(n);
+    each(x, v) cin >> x;
     string s; cin >> s;
-    set<int> st;
-    for(int i = 0; i < n; i++){
-        if(s[i] == 'g'){
-            st.insert(i);
+    map<int, char> mp;
+    rep(i, 0, n){
+        if(mp.find(v[i]) == mp.end()){
+            mp[v[i]] = s[i];
+        }
+        else if(mp[v[i]] != s[i]){
+            cout << "NO" << endl;
+            return;
         }
     }
-    int ans = 0;
-    for(int i = 0; i < n; i++){
-        int curr = 0;
-        if(s[i] == c){
-            auto it = st.lower_bound(i);
-            if(it == st.end()){
-                curr += *st.begin() + (n - i);  
-            }else{
-                curr += (*it - i);
-            }
-        }
-        ans = max(ans, curr);
-    }
-    cout << ans << endl;
-
+    cout << "YES" << endl;
 }
 
 int main() {
